@@ -1,0 +1,38 @@
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}" dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block meta_title %}{{ site_settings.default_meta_title|default:"ConsultX" }}{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}{{ site_settings.default_meta_description }}{% endblock %}">
+  {% block canonical %}{% endblock %}
+
+  <link rel="stylesheet" href="{% static 'css/output.css' %}">
+  <script src="{% static 'js/htmx.min.js' %}" defer></script>
+  <script src="{% static 'js/alpine.min.js' %}" defer></script>
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="min-h-screen flex flex-col bg-warm-white text-graphite antialiased" x-data="{ mobileNavOpen: false }">
+
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:start-2 focus:z-50 focus:bg-accent focus:text-warm-white focus:px-4 focus:py-2 focus:rounded">
+    {% translate "Skip to content" %}
+  </a>
+
+  {% include "partials/nav.html" %}
+
+  <main id="main-content" class="flex-1">
+    {% if messages %}
+      <div class="max-w-3xl mx-auto px-4 pt-6 space-y-3">
+        {% for message in messages %}
+          <div class="rounded-lg border border-technical-soft bg-white px-4 py-3 text-sm">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+
+  {% include "partials/footer.html" %}
+
+</body>
+</html>

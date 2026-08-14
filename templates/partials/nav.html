@@ -1,0 +1,67 @@
+{% load i18n static %}
+<header class="sticky top-0 z-40 bg-warm-white/95 backdrop-blur border-b border-technical-soft">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="flex items-center justify-between h-16">
+
+      <a href="{% url 'home:index' %}" class="flex items-center gap-2 font-semibold text-lg tracking-tight text-graphite">
+        {% if site_settings.logo %}
+          <img src="{{ site_settings.logo.url }}" alt="ConsultX" class="h-8 w-auto">
+        {% else %}
+          <span>ConsultX</span>
+        {% endif %}
+      </a>
+
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-graphite-soft" aria-label="{% translate 'Primary navigation' %}">
+        <a href="{% url 'team:about' %}" class="hover:text-accent transition-colors">{% translate "About" %}</a>
+        <a href="{% url 'services:list' %}" class="hover:text-accent transition-colors">{% translate "Services" %}</a>
+        <a href="{% url 'projects:list' %}" class="hover:text-accent transition-colors">{% translate "Projects" %}</a>
+        <a href="{% url 'blog:list' %}" class="hover:text-accent transition-colors">{% translate "Insights" %}</a>
+        <a href="{% url 'contact:index' %}" class="hover:text-accent transition-colors">{% translate "Contact" %}</a>
+      </nav>
+
+      <div class="flex items-center gap-4">
+        <form action="{% url 'set_language' %}" method="post" class="hidden md:block">
+          {% csrf_token %}
+          <input name="next" type="hidden" value="{{ request.path }}">
+          <select name="language" onchange="this.form.submit()"
+                  class="text-sm border border-technical-soft rounded-md bg-white ps-3 pe-8 py-1.5 text-graphite-soft">
+            {% get_current_language as CURRENT_LANGUAGE %}
+            {% get_available_languages as LANGUAGES %}
+            {% for code, label in LANGUAGES %}
+              <option value="{{ code }}" {% if code == CURRENT_LANGUAGE %}selected{% endif %}>
+                {% if code == "ar" %}العربية{% else %}{{ label }}{% endif %}
+              </option>
+            {% endfor %}
+          </select>
+        </form>
+
+        <button @click="mobileNavOpen = !mobileNavOpen" class="md:hidden p-2 -me-2" aria-label="{% translate 'Toggle menu' %}">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <nav x-show="mobileNavOpen" x-cloak class="md:hidden pb-4 flex flex-col gap-3 text-sm font-medium text-graphite-soft" aria-label="{% translate 'Mobile navigation' %}">
+      <a href="{% url 'team:about' %}">{% translate "About" %}</a>
+      <a href="{% url 'services:list' %}">{% translate "Services" %}</a>
+      <a href="{% url 'projects:list' %}">{% translate "Projects" %}</a>
+      <a href="{% url 'blog:list' %}">{% translate "Insights" %}</a>
+      <a href="{% url 'contact:index' %}">{% translate "Contact" %}</a>
+      <form action="{% url 'set_language' %}" method="post" class="pt-2">
+        {% csrf_token %}
+        <input name="next" type="hidden" value="{{ request.path }}">
+        <select name="language" onchange="this.form.submit()" class="text-sm border border-technical-soft rounded-md bg-white px-3 py-1.5">
+          {% get_current_language as CURRENT_LANGUAGE %}
+          {% get_available_languages as LANGUAGES %}
+          {% for code, label in LANGUAGES %}
+            <option value="{{ code }}" {% if code == CURRENT_LANGUAGE %}selected{% endif %}>
+              {% if code == "ar" %}العربية{% else %}{{ label }}{% endif %}
+            </option>
+          {% endfor %}
+        </select>
+      </form>
+    </nav>
+  </div>
+</header>

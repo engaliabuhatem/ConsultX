@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+/*
+  Design tokens below use the Company Profile Strategy deck's palette
+  (graphite / warm white / orange accent) rather than the creative brief's
+  navy/amber scheme, because the creative brief is the file explicitly
+  named ..._OLD_VERSION_2.pdf — see PROJECT_BRIEF.md item 4. Swap these
+  three hex values in one place once the client confirms.
+*/
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Source Serif 4", ui-serif, Georgia, serif;
+
+  --color-graphite: #17181a;
+  --color-graphite-soft: #2a2c30;
+  --color-warm-white: #f7f5f1;
+  --color-accent: #d6481f;
+  --color-accent-soft: #f0ded6;
+  --color-technical: #6b7280;
+  --color-technical-soft: #e5e7eb;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-warm-white);
+    color: var(--color-graphite);
+  }
+}

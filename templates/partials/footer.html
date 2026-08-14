@@ -1,0 +1,50 @@
+{% load i18n %}
+<footer class="mt-16 border-t border-technical-soft bg-graphite text-warm-white">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 text-sm">
+
+    <div>
+      <p class="font-semibold text-base mb-3">ConsultX</p>
+      {% if site_settings.contact_address %}
+        <p class="text-technical-soft/80 whitespace-pre-line">{{ site_settings.contact_address }}</p>
+      {% endif %}
+    </div>
+
+    <div>
+      <p class="font-semibold mb-3">{% translate "Company" %}</p>
+      <ul class="space-y-2 text-technical-soft/80">
+        <li><a href="{% url 'team:about' %}" class="hover:text-accent">{% translate "About" %}</a></li>
+        <li><a href="{% url 'team:list' %}" class="hover:text-accent">{% translate "Team" %}</a></li>
+        <li><a href="{% url 'blog:list' %}" class="hover:text-accent">{% translate "Insights" %}</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <p class="font-semibold mb-3">{% translate "Contact" %}</p>
+      <ul class="space-y-2 text-technical-soft/80">
+        {% if site_settings.contact_phone %}<li>{{ site_settings.contact_phone }}</li>{% endif %}
+        {% if site_settings.contact_email %}<li><a href="mailto:{{ site_settings.contact_email }}" class="hover:text-accent">{{ site_settings.contact_email }}</a></li>{% endif %}
+        {% if not site_settings.contact_phone and not site_settings.contact_email %}
+          <li class="italic text-technical-soft/50">{% translate "Contact details pending" %}</li>
+        {% endif %}
+      </ul>
+    </div>
+
+    <div>
+      <p class="font-semibold mb-3">{% translate "Follow Us" %}</p>
+      <ul class="flex gap-4 text-technical-soft/80">
+        {% if site_settings.linkedin_url %}<li><a href="{{ site_settings.linkedin_url }}" class="hover:text-accent">LinkedIn</a></li>{% endif %}
+        {% if site_settings.x_url %}<li><a href="{{ site_settings.x_url }}" class="hover:text-accent">X</a></li>{% endif %}
+        {% if site_settings.instagram_url %}<li><a href="{{ site_settings.instagram_url }}" class="hover:text-accent">Instagram</a></li>{% endif %}
+      </ul>
+    </div>
+  </div>
+
+  <div class="border-t border-graphite-soft">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row justify-between gap-2 text-xs text-technical-soft/60">
+      <p>&copy; {% now "Y" %} ConsultX. {{ site_settings.footer_text }}</p>
+      {% if site_settings.professional_indemnity_notice %}
+        <p>{{ site_settings.professional_indemnity_notice }}</p>
+      {% endif %}
+    </div>
+  </div>
+</footer>

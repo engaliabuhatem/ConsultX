@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block meta_title %}{% translate "Our Team" %} · ConsultX{% endblock %}
+
+{% block content %}
+<header class="max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-10">
+  <h1 class="text-3xl sm:text-4xl font-semibold">{% translate "Our Team" %}</h1>
+</header>
+
+<div class="max-w-6xl mx-auto px-4 sm:px-6 pb-20">
+  {% if team_members %}
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      {% for member in team_members %}
+        <div class="text-center">
+          {% if member.photo %}
+            <img src="{{ member.photo.url }}" alt="{{ member.name }}" class="rounded-full h-28 w-28 mx-auto object-cover">
+          {% else %}
+            <div class="rounded-full h-28 w-28 mx-auto bg-graphite-soft"></div>
+          {% endif %}
+          <p class="font-semibold mt-4">{{ member.name }}</p>
+          <p class="text-sm text-technical">{{ member.title }}</p>
+          {% if member.credentials %}<p class="text-xs text-technical mt-1">{{ member.credentials }}</p>{% endif %}
+          {% if member.linkedin_url %}
+            <a href="{{ member.linkedin_url }}" class="inline-block mt-2 text-xs font-medium text-accent hover:underline">LinkedIn</a>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-technical text-sm italic">{% translate "Team profiles will appear here once added in the admin panel." %}</p>
+  {% endif %}
+</div>
+{% endblock %}

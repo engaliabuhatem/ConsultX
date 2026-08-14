@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+
+<section class="relative h-[85vh] min-h-[520px] flex items-end">
+  {% if hero.background_image %}
+    <img src="{{ hero.background_image.url }}" alt="" class="absolute inset-0 w-full h-full object-cover">
+    <div class="absolute inset-0 bg-graphite/70"></div>
+  {% else %}
+    <div class="absolute inset-0 bg-graphite"></div>
+  {% endif %}
+
+  <div class="relative max-w-6xl mx-auto px-4 sm:px-6 pb-16 text-warm-white">
+    <h1 class="text-4xl sm:text-6xl font-semibold tracking-tight max-w-2xl">
+      {{ hero.headline|default:"Engineering excellence, agile precision, global impact." }}
+    </h1>
+    {% if hero.subheadline %}
+      <p class="mt-4 text-lg text-warm-white/80 max-w-xl">{{ hero.subheadline }}</p>
+    {% endif %}
+    <a href="{{ hero.cta_url|default:'/contact/' }}"
+       class="inline-block mt-8 bg-accent hover:bg-accent/90 text-warm-white font-medium px-6 py-3 rounded-md transition-colors">
+      {{ hero.cta_label|default:"Start Your Project" }}
+    </a>
+  </div>
+</section>
+
+{% if stats %}
+<section class="border-b border-technical-soft">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+    {% for stat in stats %}
+      <div>
+        <p class="text-3xl sm:text-4xl font-semibold text-accent">{{ stat.value }}</p>
+        <p class="mt-1 text-sm text-technical">{{ stat.label }}</p>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<section class="max-w-6xl mx-auto px-4 sm:px-6 py-20">
+  <div class="flex items-end justify-between mb-10">
+    <h2 class="text-2xl sm:text-3xl font-semibold">{% translate "What We Do" %}</h2>
+    <a href="{% url 'services:list' %}" class="text-sm font-medium text-accent hover:underline">{% translate "View All Services" %} &rarr;</a>
+  </div>
+
+  {% if featured_services %}
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for service in featured_services %}
+        <a href="{{ service.get_absolute_url }}" class="block p-6 rounded-xl border border-technical-soft bg-white hover:border-accent transition-colors">
+          <h3 class="font-semibold text-lg mb-2">{{ service.title }}</h3>
+          <p class="text-sm text-technical">{{ service.short_description }}</p>
+          <span class="inline-block mt-4 text-sm font-medium text-accent">{% translate "Learn More" %} &rarr;</span>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-technical text-sm italic">{% translate "Services will appear here once added in the admin panel." %}</p>
+  {% endif %}
+</section>
+
+<section class="max-w-6xl mx-auto px-4 sm:px-6 py-20 border-t border-technical-soft">
+  <div class="flex items-end justify-between mb-10">
+    <h2 class="text-2xl sm:text-3xl font-semibold">{% translate "Featured Projects" %}</h2>
+    <a href="{% url 'projects:list' %}" class="text-sm font-medium text-accent hover:underline">{% translate "View All Projects" %} &rarr;</a>
+  </div>
+
+  {% if featured_projects %}
+    <div class="grid sm:grid-cols-2 gap-6">
+      {% for project in featured_projects %}
+        <a href="{{ project.get_absolute_url }}" class="group block rounded-xl overflow-hidden border border-technical-soft bg-white">
+          {% if project.cover_image %}
+            <img src="{{ project.cover_image.url }}" alt="{{ project.title }}" class="h-56 w-full object-cover">
+          {% else %}
+            <div class="h-56 w-full bg-graphite-soft"></div>
+          {% endif %}
+          <div class="p-5">
+            <p class="text-xs text-technical uppercase tracking-wide">
+              {% if project.is_confidential %}{% translate "Confidential Client" %}{% else %}{{ project.client_name }}{% endif %}
+            </p>
+            <h3 class="font-semibold mt-1 group-hover:text-accent transition-colors">{{ project.title }}</h3>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="rounded-xl border border-dashed border-technical-soft p-10 text-center">
+      <p class="text-technical text-sm">
+        {% translate "ConsultX is newly founded — project case studies will appear here as engagements complete." %}
+      </p>
+    </div>
+  {% endif %}
+</section>
+
+{% if testimonials %}
+<section class="max-w-6xl mx-auto px-4 sm:px-6 py-20 border-t border-technical-soft">
+  <h2 class="text-2xl sm:text-3xl font-semibold mb-10">{% translate "What Clients Say" %}</h2>
+  <div class="grid sm:grid-cols-3 gap-6">
+    {% for t in testimonials %}
+      <blockquote class="p-6 rounded-xl bg-white border border-technical-soft">
+        <p class="text-sm text-graphite-soft">&ldquo;{{ t.quote }}&rdquo;</p>
+        <footer class="mt-4 text-sm font-medium">{{ t.client_name }}{% if t.client_role %}, <span class="text-technical font-normal">{{ t.client_role }}</span>{% endif %}</footer>
+      </blockquote>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<section class="bg-graphite text-warm-white">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-16 text-center">
+    <h2 class="text-2xl sm:text-3xl font-semibold">{{ cta.headline|default:"Ready to start your project?" }}</h2>
+    {% if cta.subtext %}<p class="mt-3 text-warm-white/70">{{ cta.subtext }}</p>{% endif %}
+    <a href="{{ cta.button_url|default:'/contact/' }}"
+       class="inline-block mt-8 bg-accent hover:bg-accent/90 px-6 py-3 rounded-md font-medium transition-colors">
+      {{ cta.button_label|default:"Contact Us" }}
+    </a>
+  </div>
+</section>
+
+{% endblock %}

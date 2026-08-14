@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block meta_title %}{{ project.meta_title|default:project.title }} · ConsultX{% endblock %}
+{% block meta_description %}{{ project.meta_description }}{% endblock %}
+
+{% block content %}
+<section class="relative h-[50vh] min-h-[320px] flex items-end">
+  {% if project.cover_image %}
+    <img src="{{ project.cover_image.url }}" alt="{{ project.title }}" class="absolute inset-0 w-full h-full object-cover">
+    <div class="absolute inset-0 bg-graphite/60"></div>
+  {% else %}
+    <div class="absolute inset-0 bg-graphite"></div>
+  {% endif %}
+  <div class="relative max-w-6xl mx-auto px-4 sm:px-6 pb-10 text-warm-white">
+    <h1 class="text-3xl sm:text-5xl font-semibold">{{ project.title }}</h1>
+  </div>
+</section>
+
+<div class="border-b border-technical-soft bg-white">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-6 grid grid-cols-2 sm:grid-cols-4 gap-6 text-sm">
+    <div>
+      <p class="text-technical uppercase text-xs tracking-wide">{% translate "Client" %}</p>
+      <p class="font-medium mt-1">{% if project.is_confidential %}{% translate "Confidential" %}{% else %}{{ project.client_name|default:"—" }}{% endif %}</p>
+    </div>
+    <div>
+      <p class="text-technical uppercase text-xs tracking-wide">{% translate "Location" %}</p>
+      <p class="font-medium mt-1">{{ project.location|default:"—" }}</p>
+    </div>
+    <div>
+      <p class="text-technical uppercase text-xs tracking-wide">{% translate "Completed" %}</p>
+      <p class="font-medium mt-1">{{ project.date_completed|date:"Y"|default:"—" }}</p>
+    </div>
+    <div>
+      <p class="text-technical uppercase text-xs tracking-wide">{% translate "Role" %}</p>
+      <p class="font-medium mt-1">{{ project.role|default:"—" }}</p>
+    </div>
+  </div>
+</div>
+
+<div class="max-w-3xl mx-auto px-4 sm:px-6 py-16 space-y-10">
+  {% if project.challenge %}
+    <div><h2 class="font-semibold text-lg mb-2">{% translate "Challenge" %}</h2><p class="text-graphite-soft whitespace-pre-line">{{ project.challenge }}</p></div>
+  {% endif %}
+  {% if project.response %}
+    <div><h2 class="font-semibold text-lg mb-2">{% translate "ConsultX Response" %}</h2><p class="text-graphite-soft whitespace-pre-line">{{ project.response }}</p></div>
+  {% endif %}
+  {% if project.outcome %}
+    <div><h2 class="font-semibold text-lg mb-2">{% translate "Outcome" %}</h2><p class="text-graphite-soft whitespace-pre-line">{{ project.outcome }}</p></div>
+  {% endif %}
+</div>
+
+{% if project.gallery_images.all %}
+<div class="max-w-6xl mx-auto px-4 sm:px-6 pb-20 grid grid-cols-2 sm:grid-cols-4 gap-3">
+  {% for img in project.gallery_images.all %}
+    <img src="{{ img.image.url }}" alt="{{ img.caption }}" class="rounded-lg object-cover h-32 w-full">
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

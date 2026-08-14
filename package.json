@@ -1,0 +1,22 @@
+{
+  "name": "consultx-frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build:css": "tailwindcss -i assets/input.css -o static/css/output.css --minify",
+    "watch:css": "tailwindcss -i assets/input.css -o static/css/output.css --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.3",
+    "tailwindcss": "^4.3.3"
+  },
+  "dependencies": {
+    "alpinejs": "^3.16.1",
+    "htmx.org": "^2.0.10"
+  },
+  "private": true
+}

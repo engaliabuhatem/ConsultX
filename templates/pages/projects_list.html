@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block meta_title %}{% translate "Our Projects" %} · ConsultX{% endblock %}
+
+{% block content %}
+<header class="max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-10">
+  <h1 class="text-3xl sm:text-4xl font-semibold">{% translate "Our Projects" %}</h1>
+  <p class="mt-3 text-technical max-w-2xl">{% translate "A running record of engagements, published as they complete." %}</p>
+</header>
+
+<div class="max-w-6xl mx-auto px-4 sm:px-6 mb-10 flex flex-wrap items-center gap-3">
+  <form method="get" class="flex-1 min-w-[200px]">
+    <input type="search" name="q" value="{{ query }}" placeholder="{% translate 'Search projects...' %}"
+           class="w-full border border-technical-soft rounded-md px-4 py-2 text-sm bg-white">
+  </form>
+  {% for cat in categories %}
+    <a href="?category={{ cat.slug }}"
+       class="px-4 py-1.5 rounded-full text-sm border {% if active_category == cat.slug %}bg-graphite text-warm-white border-graphite{% else %}border-technical-soft text-technical{% endif %}">
+      {{ cat.name }}
+    </a>
+  {% endfor %}
+</div>
+
+<div class="max-w-6xl mx-auto px-4 sm:px-6 pb-20">
+  {% if projects %}
+    <div class="grid sm:grid-cols-2 gap-6">
+      {% for project in projects %}
+        <a href="{{ project.get_absolute_url }}" class="group block rounded-xl overflow-hidden border border-technical-soft bg-white">
+          {% if project.cover_image %}
+            <img src="{{ project.cover_image.url }}" alt="{{ project.title }}" class="h-56 w-full object-cover">
+          {% else %}
+            <div class="h-56 w-full bg-graphite-soft"></div>
+          {% endif %}
+          <div class="p-5">
+            <p class="text-xs text-technical uppercase tracking-wide">
+              {% if project.is_confidential %}{% translate "Confidential Client" %}{% else %}{{ project.client_name }}{% endif %}
+              {% if project.date_completed %} · {{ project.date_completed|date:"Y" }}{% endif %}
+            </p>
+            <h2 class="font-semibold mt-1 group-hover:text-accent transition-colors">{{ project.title }}</h2>
+            <span class="inline-block mt-3 text-sm font-medium text-accent">{% translate "View Project" %} &rarr;</span>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+
+    {% if is_paginated %}
+      <nav class="mt-10 flex justify-center gap-2 text-sm">
+        {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}" class="px-3 py-1.5 border border-technical-soft rounded-md">&larr;</a>{% endif %}
+        <span class="px-3 py-1.5">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}" class="px-3 py-1.5 border border-technical-soft rounded-md">&rarr;</a>{% endif %}
+      </nav>
+    {% endif %}
+
+  {% else %}
+    <div class="rounded-xl border border-dashed border-technical-soft p-16 text-center max-w-2xl mx-auto">
+      <h2 class="font-semibold text-lg mb-2">{% translate "Our project archive is just getting started." %}</h2>
+      <p class="text-technical text-sm">
+        {% translate "ConsultX is a newly founded practice. Case studies will be published here as engagements complete — in the meantime, our team's individual track record is on the" %}
+        <a href="{% url 'team:about' %}" class="text-accent hover:underline">{% translate "About page" %}</a>.
+      </p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

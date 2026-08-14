@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block meta_title %}{{ post.meta_title|default:post.title }} · ConsultX{% endblock %}
+{% block meta_description %}{{ post.meta_description|default:post.excerpt }}{% endblock %}
+
+{% block content %}
+<article class="max-w-3xl mx-auto px-4 sm:px-6 py-16">
+  <p class="text-xs uppercase tracking-wide text-accent mb-3">{{ post.get_content_type_display }}{% if post.category %} · {{ post.category.name }}{% endif %}</p>
+  <h1 class="text-3xl sm:text-4xl font-semibold">{{ post.title }}</h1>
+  <div class="mt-4 flex items-center gap-3 text-sm text-technical">
+    {% if post.author %}<span>{{ post.author.name }}</span> · {% endif %}
+    <span>{{ post.published_at|date:"F Y" }}</span>
+  </div>
+
+  {% if post.featured_image %}
+    <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="mt-8 rounded-xl w-full object-cover">
+  {% endif %}
+
+  <div class="prose prose-sm sm:prose-base max-w-none mt-8 whitespace-pre-line text-graphite-soft">{{ post.content }}</div>
+
+  {% if post.whitepaper_file %}
+    <a href="{{ post.whitepaper_file.url }}"
+       class="inline-block mt-8 bg-accent hover:bg-accent/90 text-warm-white font-medium px-6 py-3 rounded-md transition-colors">
+      {% translate "Download Whitepaper (PDF)" %}
+    </a>
+  {% endif %}
+</article>
+{% endblock %}
