@@ -11,7 +11,7 @@ class HomeHero(TimeStampedModel):
 
     headline = models.CharField(max_length=150)
     subheadline = models.CharField(max_length=250, blank=True)
-    background_image = models.ImageField(upload_to="home/")
+    background_image = models.ImageField(upload_to="home/", blank=True, null=True)
     cta_label = models.CharField(max_length=40, default="Start Your Project")
     cta_url = models.CharField(max_length=200, default="/contact/")
 
