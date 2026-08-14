@@ -3,6 +3,11 @@ from .base import env
 
 DEBUG = False
 
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
+}
+
 DATABASES = {
     "default": env.db("DATABASE_URL"),
 }
