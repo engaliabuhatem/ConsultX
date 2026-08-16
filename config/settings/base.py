@@ -76,6 +76,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "django.template.context_processors.i18n",
                 "apps.siteconfig.context_processors.site_settings",
+                "apps.core.navigation.navigation",
             ],
         },
     },

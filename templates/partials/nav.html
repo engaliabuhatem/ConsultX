@@ -1,7 +1,23 @@
 {% load i18n static %}
+{% comment %}
+Primary navigation. Structure comes from apps/core/navigation.py so the
+desktop bar and the mobile drawer below cannot drift apart.
+
+Dropdowns follow the W3C APG *Disclosure Navigation* pattern, not the
+menubar pattern: these hold links, not commands, so the native <ul>/<a>
+semantics are left intact and the only ARIA is aria-expanded + aria-controls
+on a real <button>. role="menu"/"menuitem" would promise arrow-key composite
+focus management that a site nav neither needs nor implements — announcing a
+widget you haven't built is worse than announcing none.
+
+Per that pattern each dropdown: closes on Escape and returns focus to its
+button, closes when focus leaves the group, and closes on outside click.
+Hover-to-open is gated on (hover: hover) so a touch tap doesn't open and
+immediately re-close the panel.
+{% endcomment %}
 <header class="sticky top-0 z-40 bg-warm-white/95 backdrop-blur border-b border-technical-soft">
   <div class="max-w-7xl mx-auto px-4 sm:px-6">
-    <div class="flex items-center justify-between h-16 gap-4">
+    <div class="flex items-center justify-between h-16 gap-6">
 
       <a href="{% url 'home:index' %}" class="flex items-center gap-2 font-semibold text-lg tracking-tight text-graphite shrink-0">
         {% if site_settings.logo %}
@@ -11,10 +27,66 @@
         {% endif %}
       </a>
 
-      {# Ten items no longer fit a md: bar at gap-8 — the breakpoint moves to
-         xl: and the gap tightens, so the drawer carries the nav on tablets. #}
-      <nav class="hidden xl:flex items-center gap-5 text-sm font-medium text-graphite-soft" aria-label="{% translate 'Primary navigation' %}">
-        {% include "partials/nav_links.html" with link_class="hover:text-accent transition-colors whitespace-nowrap" active_class="text-accent" %}
+      <nav class="hidden lg:block" aria-label="{% translate 'Primary navigation' %}">
+        <ul class="flex items-center gap-1">
+          {% for item in nav_items %}
+            {% if item.is_group %}
+              <li class="relative"
+                  x-data="{ open: false, canHover: window.matchMedia('(hover: hover)').matches }"
+                  @mouseenter="canHover && (open = true)"
+                  @mouseleave="canHover && (open = false)"
+                  @focusout="if (!$el.contains($event.relatedTarget)) open = false"
+                  @keydown.escape.prevent.stop="open = false; $refs.trigger.focus()"
+                  @click.outside="open = false">
+                <button type="button" x-ref="trigger" @click="open = !open"
+                        id="nav-{{ item.key }}-trigger"
+                        aria-controls="nav-{{ item.key }}"
+                        :aria-expanded="open ? 'true' : 'false'"
+                        class="flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap
+                               {% if item.is_current %}text-accent{% else %}text-graphite-soft hover:text-accent{% endif %}">
+                  {{ item.label }}
+                  <svg class="h-4 w-4 transition-transform duration-150" :class="open && 'rotate-180'"
+                       viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.17l3.71-3.94a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                  </svg>
+                </button>
+
+                <ul id="nav-{{ item.key }}" x-show="open" x-cloak
+                    x-transition:enter="nav-dropdown-enter"
+                    aria-labelledby="nav-{{ item.key }}-trigger"
+                    class="absolute start-0 top-full mt-1 w-72 p-2 rounded-xl border border-technical-soft bg-white shadow-lg">
+                  {% for child in item.children %}
+                    <li>
+                      <a href="{{ child.url }}"{% if child.is_current %} aria-current="page"{% endif %}
+                         class="block px-3 py-2.5 rounded-lg transition-colors hover:bg-accent/5
+                                {% if child.is_current %}bg-accent/5{% endif %}">
+                        <span class="block text-sm font-medium {% if child.is_current %}text-accent{% else %}text-graphite{% endif %}">{{ child.label }}</span>
+                        {% if child.blurb %}
+                          <span class="block mt-0.5 text-xs text-technical">{{ child.blurb }}</span>
+                        {% endif %}
+                      </a>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </li>
+            {% elif item.cta %}
+              <li class="ms-2">
+                <a href="{{ item.url }}"{% if item.is_current %} aria-current="page"{% endif %}
+                   class="inline-block px-4 py-2 rounded-md text-sm font-medium bg-accent text-warm-white hover:bg-accent/90 transition-colors whitespace-nowrap">
+                  {{ item.label }}
+                </a>
+              </li>
+            {% else %}
+              <li>
+                <a href="{{ item.url }}"{% if item.is_current %} aria-current="page"{% endif %}
+                   class="block px-3 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap
+                          {% if item.is_current %}text-accent{% else %}text-graphite-soft hover:text-accent{% endif %}">
+                  {{ item.label }}
+                </a>
+              </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
       </nav>
 
       <div class="flex items-center gap-3 shrink-0">
@@ -34,7 +106,7 @@
           </select>
         </form>
 
-        <button @click="mobileNavOpen = !mobileNavOpen" class="xl:hidden p-2 -me-2"
+        <button @click="mobileNavOpen = !mobileNavOpen" class="lg:hidden p-2 -me-2"
                 :aria-expanded="mobileNavOpen ? 'true' : 'false'" aria-controls="mobile-nav"
                 aria-label="{% translate 'Toggle menu' %}">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -44,11 +116,54 @@
       </div>
     </div>
 
-    <nav id="mobile-nav" x-show="mobileNavOpen" x-cloak
-         class="xl:hidden pb-4 grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm font-medium text-graphite-soft"
+    {# Mobile: same tree, accordion instead of dropdowns — hover doesn't
+       exist and an overlay panel inside a drawer is a focus trap waiting
+       to happen. #}
+    <nav id="mobile-nav" x-show="mobileNavOpen" x-cloak class="lg:hidden pb-4"
          aria-label="{% translate 'Mobile navigation' %}">
-      {% include "partials/nav_links.html" with link_class="py-1 hover:text-accent transition-colors" active_class="text-accent" %}
-      <form action="{% url 'set_language' %}" method="post" class="pt-2 sm:hidden">
+      <ul class="flex flex-col gap-1">
+        {% for item in nav_items %}
+          {% if item.is_group %}
+            <li x-data="{ open: {% if item.is_current %}true{% else %}false{% endif %} }"
+                @keydown.escape.prevent.stop="open = false; $refs.mtrigger.focus()">
+              <button type="button" x-ref="mtrigger" @click="open = !open"
+                      id="mnav-{{ item.key }}-trigger"
+                      aria-controls="mnav-{{ item.key }}"
+                      :aria-expanded="open ? 'true' : 'false'"
+                      class="w-full flex items-center justify-between py-2.5 text-sm font-medium
+                             {% if item.is_current %}text-accent{% else %}text-graphite-soft{% endif %}">
+                {{ item.label }}
+                <svg class="h-4 w-4 transition-transform duration-150" :class="open && 'rotate-180'"
+                     viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.17l3.71-3.94a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                </svg>
+              </button>
+              <ul id="mnav-{{ item.key }}" x-show="open" x-cloak
+                  aria-labelledby="mnav-{{ item.key }}-trigger"
+                  class="ms-3 ps-3 border-s border-technical-soft flex flex-col gap-1 pb-2">
+                {% for child in item.children %}
+                  <li>
+                    <a href="{{ child.url }}"{% if child.is_current %} aria-current="page"{% endif %}
+                       class="block py-2 text-sm {% if child.is_current %}text-accent font-medium{% else %}text-graphite-soft{% endif %}">
+                      {{ child.label }}
+                    </a>
+                  </li>
+                {% endfor %}
+              </ul>
+            </li>
+          {% else %}
+            <li>
+              <a href="{{ item.url }}"{% if item.is_current %} aria-current="page"{% endif %}
+                 class="block py-2.5 text-sm font-medium
+                        {% if item.is_current %}text-accent{% else %}text-graphite-soft{% endif %}">
+                {{ item.label }}
+              </a>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+
+      <form action="{% url 'set_language' %}" method="post" class="pt-4 sm:hidden">
         {% csrf_token %}
         <input name="next" type="hidden" value="{{ request.path }}">
         <label for="lang-mobile" class="sr-only">{% translate "Language" %}</label>

@@ -30,4 +30,35 @@
     background-color: var(--color-warm-white);
     color: var(--color-graphite);
   }
+  /* Alpine sets x-cloak on elements that start hidden; without this they
+     flash visible for one frame before Alpine boots. */
+  [x-cloak] {
+    display: none !important;
+  }
+}
+
+/*
+  Nav dropdown entrance. Applied by x-transition:enter in partials/nav.html.
+
+  Wrapped in no-preference rather than gated the other way round, so the
+  animation is opt-in: a reduced-motion user gets the panel appearing
+  instantly, matching how static/js/animations.js gates GSAP and AOS.
+  The panel's visibility is Alpine's x-show, never this rule — so if the
+  animation never runs the menu still works.
+*/
+@media (prefers-reduced-motion: no-preference) {
+  .nav-dropdown-enter {
+    animation: nav-dropdown-in 150ms ease-out;
+  }
+}
+
+@keyframes nav-dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
