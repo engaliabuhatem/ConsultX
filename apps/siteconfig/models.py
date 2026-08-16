@@ -1,7 +1,13 @@
 from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 from django.db import models
 
 from apps.core.models import SEOFields, TimeStampedModel
+
+hex_color_validator = RegexValidator(
+    regex=r"^#[0-9A-Fa-f]{6}$",
+    message="Enter a 6-digit hex color, e.g. #d6481f (including the #).",
+)
 
 
 class SiteSettings(TimeStampedModel, SEOFields):
@@ -13,6 +19,12 @@ class SiteSettings(TimeStampedModel, SEOFields):
 
     logo = models.ImageField(upload_to="site/", blank=True, null=True)
     favicon = models.ImageField(upload_to="site/", blank=True, null=True)
+    accent_color = models.CharField(
+        max_length=7, blank=True, validators=[hex_color_validator],
+        help_text="Hex color, e.g. #d6481f (include the #). Overrides the site's accent "
+                   "color everywhere it's used — buttons, links, highlights — without "
+                   "needing a code change. Leave blank to use the built-in default.",
+    )
 
     # Real values are placeholders until the company supplies them —
     # see PROJECT_BRIEF.md §8/§9. Left blank rather than filled with

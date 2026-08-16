@@ -7,7 +7,7 @@ from .models import SiteSettings
 @admin.register(SiteSettings)
 class SiteSettingsAdmin(ModelAdmin):
     fieldsets = (
-        ("Branding", {"fields": ("logo", "favicon")}),
+        ("Branding", {"fields": ("logo", "favicon", "accent_color")}),
         ("Contact", {"fields": ("contact_phone", "contact_email", "contact_address")}),
         ("Social", {"fields": ("linkedin_url", "x_url", "instagram_url", "youtube_url")}),
         ("Footer", {"fields": ("footer_text", "professional_indemnity_notice")}),

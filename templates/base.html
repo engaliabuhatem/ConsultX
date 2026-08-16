@@ -9,6 +9,11 @@
   {% block canonical %}{% endblock %}
 
   <link rel="stylesheet" href="{% static 'css/output.css' %}">
+  {% if site_settings.accent_color %}
+    {# Every bg-accent/text-accent/border-accent utility in output.css reads var(--color-accent) —
+       overriding it here, after the stylesheet loads, changes the whole site with no rebuild. #}
+    <style>:root { --color-accent: {{ site_settings.accent_color }}; }</style>
+  {% endif %}
   <script src="{% static 'js/htmx.min.js' %}" defer></script>
   <script src="{% static 'js/alpine.min.js' %}" defer></script>
   <script src="{% static 'js/gsap.min.js' %}" defer></script>
