@@ -10,6 +10,22 @@ hex_color_validator = RegexValidator(
 )
 
 
+def validate_no_angle_brackets(value):
+    """
+    Custom CSS is rendered directly inside a <style> tag with no escaping —
+    escaping would corrupt otherwise-valid CSS (e.g. "&" in a selector).
+    The tradeoff is that a stray "<" could close the tag early and inject
+    something else into the page. Since '<' has no legitimate use in CSS,
+    blocking it outright removes that risk without limiting real CSS.
+    """
+    if "<" in value:
+        raise ValidationError(
+            "Custom CSS can't contain the '<' character — it's rendered directly "
+            "into the page, and '<' could close the style tag early. Standard CSS "
+            "never needs it."
+        )
+
+
 class SiteSettings(TimeStampedModel, SEOFields):
     """
     Singleton: one row, holds everything global (logo, contact, socials,
@@ -24,6 +40,13 @@ class SiteSettings(TimeStampedModel, SEOFields):
         help_text="Hex color, e.g. #d6481f (include the #). Overrides the site's accent "
                    "color everywhere it's used — buttons, links, highlights — without "
                    "needing a code change. Leave blank to use the built-in default.",
+    )
+    custom_css = models.TextField(
+        blank=True, validators=[validate_no_angle_brackets],
+        help_text="Advanced. Raw CSS, added to every page after all other styles — so it "
+                   "can override anything: fonts, spacing, animation timing, hover states, "
+                   "whatever a selector can reach. No live preview — check the live site "
+                   "after saving. The one rule: no '<' character (see validation message).",
     )
 
     # Real values are placeholders until the company supplies them —
