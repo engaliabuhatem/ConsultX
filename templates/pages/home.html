@@ -5,20 +5,20 @@
 
 <section class="relative h-[85vh] min-h-[520px] flex items-end">
   {% if hero.background_image %}
-    <img src="{{ hero.background_image.url }}" alt="" class="absolute inset-0 w-full h-full object-cover">
+    <img src="{{ hero.background_image.url }}" alt="" data-hero-parallax class="absolute inset-0 w-full h-full object-cover">
     <div class="absolute inset-0 bg-graphite/70"></div>
   {% else %}
     <div class="absolute inset-0 bg-graphite"></div>
   {% endif %}
 
   <div class="relative max-w-6xl mx-auto px-4 sm:px-6 pb-16 text-warm-white">
-    <h1 class="text-4xl sm:text-6xl font-semibold tracking-tight max-w-2xl">
+    <h1 data-aos="fade-up" class="text-4xl sm:text-6xl font-semibold tracking-tight max-w-2xl">
       {{ hero.headline|default:"Engineering excellence, agile precision, global impact." }}
     </h1>
     {% if hero.subheadline %}
-      <p class="mt-4 text-lg text-warm-white/80 max-w-xl">{{ hero.subheadline }}</p>
+      <p data-aos="fade-up" data-aos-delay="100" class="mt-4 text-lg text-warm-white/80 max-w-xl">{{ hero.subheadline }}</p>
     {% endif %}
-    <a href="{{ hero.cta_url|default:'/contact/' }}"
+    <a href="{{ hero.cta_url|default:'/contact/' }}" data-aos="fade-up" data-aos-delay="200"
        class="inline-block mt-8 bg-accent hover:bg-accent/90 text-warm-white font-medium px-6 py-3 rounded-md transition-colors">
       {{ hero.cta_label|default:"Start Your Project" }}
     </a>
@@ -29,8 +29,8 @@
 <section class="border-b border-technical-soft">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
     {% for stat in stats %}
-      <div>
-        <p class="text-3xl sm:text-4xl font-semibold text-accent">{{ stat.value }}</p>
+      <div data-aos="fade-up" data-aos-delay="{% widthratio forloop.counter0 1 100 %}">
+        <p data-counter class="text-3xl sm:text-4xl font-semibold text-accent">{{ stat.value }}</p>
         <p class="mt-1 text-sm text-technical">{{ stat.label }}</p>
       </div>
     {% endfor %}
@@ -47,7 +47,7 @@
   {% if featured_services %}
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {% for service in featured_services %}
-        <a href="{{ service.get_absolute_url }}" class="block p-6 rounded-xl border border-technical-soft bg-white hover:border-accent transition-colors">
+        <a href="{{ service.get_absolute_url }}" data-aos="fade-up" data-aos-delay="{% widthratio forloop.counter0 1 100 %}" class="block p-6 rounded-xl border border-technical-soft bg-white hover:border-accent transition-colors">
           <h3 class="font-semibold text-lg mb-2">{{ service.title }}</h3>
           <p class="text-sm text-technical">{{ service.short_description }}</p>
           <span class="inline-block mt-4 text-sm font-medium text-accent">{% translate "Learn More" %} &rarr;</span>
@@ -68,7 +68,7 @@
   {% if featured_projects %}
     <div class="grid sm:grid-cols-2 gap-6">
       {% for project in featured_projects %}
-        <a href="{{ project.get_absolute_url }}" class="group block rounded-xl overflow-hidden border border-technical-soft bg-white">
+        <a href="{{ project.get_absolute_url }}" data-aos="fade-up" data-aos-delay="{% widthratio forloop.counter0 1 100 %}" class="group block rounded-xl overflow-hidden border border-technical-soft bg-white">
           {% if project.cover_image %}
             <img src="{{ project.cover_image.url }}" alt="{{ project.title }}" class="h-56 w-full object-cover">
           {% else %}
@@ -97,7 +97,7 @@
   <h2 class="text-2xl sm:text-3xl font-semibold mb-10">{% translate "What Clients Say" %}</h2>
   <div class="grid sm:grid-cols-3 gap-6">
     {% for t in testimonials %}
-      <blockquote class="p-6 rounded-xl bg-white border border-technical-soft">
+      <blockquote data-aos="fade-up" data-aos-delay="{% widthratio forloop.counter0 1 100 %}" class="p-6 rounded-xl bg-white border border-technical-soft">
         <p class="text-sm text-graphite-soft">&ldquo;{{ t.quote }}&rdquo;</p>
         <footer class="mt-4 text-sm font-medium">{{ t.client_name }}{% if t.client_role %}, <span class="text-technical font-normal">{{ t.client_role }}</span>{% endif %}</footer>
       </blockquote>

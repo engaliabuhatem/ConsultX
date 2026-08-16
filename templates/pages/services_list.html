@@ -28,7 +28,7 @@
   {% if services %}
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {% for service in services %}
-        <a href="{{ service.get_absolute_url }}" class="block p-6 rounded-xl border border-technical-soft bg-white hover:border-accent transition-colors">
+        <a href="{{ service.get_absolute_url }}" data-aos="fade-up" data-aos-delay="{% widthratio forloop.counter0 1 100 %}" class="block p-6 rounded-xl border border-technical-soft bg-white hover:border-accent transition-colors">
           <p class="text-xs uppercase tracking-wide text-accent mb-2">{{ service.category.name }}</p>
           <h2 class="font-semibold text-lg mb-2">{{ service.title }}</h2>
           <p class="text-sm text-technical">{{ service.short_description }}</p>

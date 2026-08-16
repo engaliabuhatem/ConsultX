@@ -12,7 +12,7 @@
   {% if team_members %}
     <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
       {% for member in team_members %}
-        <div class="text-center">
+        <div data-aos="fade-up" data-aos-delay="{% widthratio forloop.counter0 1 100 %}" class="text-center">
           {% if member.photo %}
             <img src="{{ member.photo.url }}" alt="{{ member.name }}" class="rounded-full h-28 w-28 mx-auto object-cover">
           {% else %}

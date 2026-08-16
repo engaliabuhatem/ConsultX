@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./vendor/aos.css";
 
 /*
   Design tokens below use the Company Profile Strategy deck's palette

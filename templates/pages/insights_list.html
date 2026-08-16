@@ -13,7 +13,7 @@
   {% if posts %}
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {% for post in posts %}
-        <a href="{{ post.get_absolute_url }}" class="block rounded-xl overflow-hidden border border-technical-soft bg-white">
+        <a href="{{ post.get_absolute_url }}" data-aos="fade-up" data-aos-delay="{% widthratio forloop.counter0 1 100 %}" class="block rounded-xl overflow-hidden border border-technical-soft bg-white">
           {% if post.featured_image %}
             <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="h-40 w-full object-cover">
           {% else %}
