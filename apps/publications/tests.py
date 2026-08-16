@@ -1,10 +1,19 @@
 import datetime
+import shutil
+import tempfile
 
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 
 from .models import Publication
+
+# See apps/careers/tests.py — MEDIA_ROOT is not isolated by the test runner.
+_TEST_MEDIA = tempfile.mkdtemp(prefix="consultx-test-media-")
+
+
+def tearDownModule():
+    shutil.rmtree(_TEST_MEDIA, ignore_errors=True)
 
 
 def make_publication(**overrides):
@@ -20,6 +29,7 @@ def make_publication(**overrides):
     return Publication.objects.create(**defaults)
 
 
+@override_settings(MEDIA_ROOT=_TEST_MEDIA)
 class PublicationListTests(TestCase):
     def test_only_published_documents_are_listed(self):
         make_publication()
@@ -44,6 +54,7 @@ class PublicationListTests(TestCase):
         self.assertContains(response, "No publications yet.")
 
 
+@override_settings(MEDIA_ROOT=_TEST_MEDIA)
 class PublicationDetailTests(TestCase):
     def test_published_document_is_reachable(self):
         pub = make_publication()

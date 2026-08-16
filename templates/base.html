@@ -10,15 +10,21 @@
 
   <link rel="stylesheet" href="{% static 'css/output.css' %}">
   {% if site_settings.accent_color %}
-    {# Every bg-accent/text-accent/border-accent utility in output.css reads var(--color-accent) —
-       overriding it here, after the stylesheet loads, changes the whole site with no rebuild. #}
+    {% comment %}
+      Every bg-accent/text-accent/border-accent utility in output.css reads
+      var(--color-accent) — overriding it here, after the stylesheet loads,
+      changes the whole site with no rebuild.
+    {% endcomment %}
     <style>:root { --color-accent: {{ site_settings.accent_color }}; }</style>
   {% endif %}
   {% if site_settings.custom_css %}
-    {# |safe deliberately: autoescaping would mangle legitimate CSS (e.g. "&" in a
-       selector). Safety here comes from the model's validate_no_angle_brackets
-       validator, not template escaping — see apps/siteconfig/models.py. Rendered
-       last so it can override the accent color above too, if someone wants to. #}
+    {% comment %}
+      |safe deliberately: autoescaping would mangle legitimate CSS (e.g. "&"
+      in a selector). Safety here comes from the model's
+      validate_no_angle_brackets validator, not template escaping — see
+      apps/siteconfig/models.py. Rendered last so it can override the accent
+      color above too, if someone wants to.
+    {% endcomment %}
     <style>{{ site_settings.custom_css|safe }}</style>
   {% endif %}
   <script src="{% static 'js/htmx.min.js' %}" defer></script>

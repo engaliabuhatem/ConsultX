@@ -11,8 +11,10 @@
 
 <div class="max-w-6xl mx-auto px-4 sm:px-6 pb-20">
   {% if leaders %}
-    {# Wider cards than /team/: leadership profiles carry a full bio, so the
-       layout gives the text room instead of reusing the 4-up avatar grid. #}
+    {% comment %}
+      Wider cards than /team/: leadership profiles carry a full bio, so the
+      layout gives the text room instead of reusing the 4-up avatar grid.
+    {% endcomment %}
     <div class="grid md:grid-cols-2 gap-8">
       {% for leader in leaders %}
         <article data-aos="fade-up" data-aos-delay="{% widthratio forloop.counter0 1 100 %}"

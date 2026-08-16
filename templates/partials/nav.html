@@ -116,9 +116,10 @@ immediately re-close the panel.
       </div>
     </div>
 
-    {# Mobile: same tree, accordion instead of dropdowns — hover doesn't
-       exist and an overlay panel inside a drawer is a focus trap waiting
-       to happen. #}
+    {% comment %}
+      Mobile: same tree, accordion instead of dropdowns — hover doesn't exist
+      and an overlay panel inside a drawer is a focus trap waiting to happen.
+    {% endcomment %}
     <nav id="mobile-nav" x-show="mobileNavOpen" x-cloak class="lg:hidden pb-4"
          aria-label="{% translate 'Mobile navigation' %}">
       <ul class="flex flex-col gap-1">

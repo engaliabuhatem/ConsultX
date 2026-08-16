@@ -45,8 +45,10 @@
     </div>
   {% endif %}
 
-  {# Always offered, whether or not roles are listed — a good candidate
-     arriving on an empty careers page should still have somewhere to go. #}
+  {% comment %}
+    Always offered, whether or not roles are listed — a good candidate
+    arriving on an empty careers page should still have somewhere to go.
+  {% endcomment %}
   <div class="mt-10 p-6 rounded-xl bg-white border border-technical-soft flex flex-wrap items-center justify-between gap-4" data-aos="fade-up">
     <div>
       <h2 class="font-semibold">{% translate "Nothing matching your discipline?" %}</h2>

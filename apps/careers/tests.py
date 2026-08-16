@@ -1,12 +1,22 @@
 import datetime
+import shutil
+import tempfile
 
 from django.core.cache import cache
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 
 from .models import JobApplication, JobOpening
+
+# Django isolates the test *database* but not MEDIA_ROOT — without this every
+# run left real CV/cover-letter PDFs in the project's media/ directory.
+_TEST_MEDIA = tempfile.mkdtemp(prefix="consultx-test-media-")
+
+
+def tearDownModule():
+    shutil.rmtree(_TEST_MEDIA, ignore_errors=True)
 
 
 def make_cv(name="cv.pdf", content=b"%PDF-1.4 fake"):
@@ -33,6 +43,7 @@ def valid_payload(**overrides):
     return data
 
 
+@override_settings(MEDIA_ROOT=_TEST_MEDIA)
 class JobOpeningListTests(TestCase):
     def setUp(self):
         cache.clear()
@@ -56,6 +67,7 @@ class JobOpeningListTests(TestCase):
         self.assertContains(response, reverse("careers:apply"))
 
 
+@override_settings(MEDIA_ROOT=_TEST_MEDIA)
 class JobApplicationSubmitTests(TestCase):
     def setUp(self):
         cache.clear()
@@ -137,6 +149,7 @@ class JobApplicationSubmitTests(TestCase):
         self.assertEqual(JobApplication.objects.count(), 5)
 
 
+@override_settings(MEDIA_ROOT=_TEST_MEDIA)
 class ClosedRoleTests(TestCase):
     def setUp(self):
         cache.clear()
