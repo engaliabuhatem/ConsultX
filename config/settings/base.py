@@ -117,7 +117,42 @@ CONTACT_FORM_RATE = "5/h"
 UNFOLD = {
     "SITE_TITLE": "ConsultX Admin",
     "SITE_HEADER": "ConsultX",
+    "SITE_SUBHEADER": "Content & Enquiries",
     "SITE_SYMBOL": "engineering",
     "SHOW_HISTORY": True,
     "SHOW_VIEW_ON_SITE": True,
+    "BORDER_RADIUS": "6px",
+    # Computed from the actual brand hex values (accent #d6481f, graphite hue-matched
+    # rather than taken from the near-black graphite hex directly — a source color that
+    # dark carries almost no reliable hue information, so its OKLCH hue comes out
+    # essentially as noise). Regenerate with a proper color library if the palette
+    # in PROJECT_BRIEF.md item 4 gets reconfirmed to something else.
+    "COLORS": {
+        "base": {
+            "50": "oklch(98.0% 0.006 35.9)",
+            "100": "oklch(95.5% 0.007 35.9)",
+            "200": "oklch(90.0% 0.008 35.9)",
+            "300": "oklch(82.0% 0.009 35.9)",
+            "400": "oklch(71.0% 0.010 35.9)",
+            "500": "oklch(60.0% 0.010 35.9)",
+            "600": "oklch(50.0% 0.009 35.9)",
+            "700": "oklch(42.0% 0.008 35.9)",
+            "800": "oklch(33.0% 0.007 35.9)",
+            "900": "oklch(24.0% 0.006 35.9)",
+            "950": "oklch(15.0% 0.005 35.9)",
+        },
+        "primary": {
+            "50": "oklch(97.5% 0.020 35.9)",
+            "100": "oklch(94.0% 0.040 35.9)",
+            "200": "oklch(87.0% 0.070 35.9)",
+            "300": "oklch(79.0% 0.110 35.9)",
+            "400": "oklch(68.5% 0.150 35.9)",
+            "500": "oklch(59.6% 0.185 35.9)",
+            "600": "oklch(52.0% 0.170 35.9)",
+            "700": "oklch(44.0% 0.145 35.9)",
+            "800": "oklch(36.5% 0.115 35.9)",
+            "900": "oklch(30.0% 0.085 35.9)",
+            "950": "oklch(21.0% 0.055 35.9)",
+        },
+    },
 }
