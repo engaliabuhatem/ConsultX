@@ -38,10 +38,14 @@ INSTALLED_APPS = [
     "apps.siteconfig",
     "apps.home",
     "apps.services",
+    "apps.sectors",
     "apps.projects",
     "apps.team",
     "apps.testimonials",
     "apps.blog",
+    "apps.publications",
+    "apps.careers",
+    "apps.partners",
     "apps.contact",
 ]
 

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block meta_title %}{{ sector.meta_title|default:sector.name }} · ConsultX{% endblock %}
+{% block meta_description %}{{ sector.meta_description|default:sector.short_description }}{% endblock %}
+
+{% block content %}
+<header class="max-w-4xl mx-auto px-4 sm:px-6 pt-16 pb-8">
+  <a href="{% url 'sectors:list' %}" class="text-sm text-accent hover:underline">&larr; {% translate "All sectors" %}</a>
+  <h1 class="mt-4 text-3xl sm:text-4xl font-semibold">{{ sector.name }}</h1>
+  <p class="mt-3 text-lg text-technical">{{ sector.short_description }}</p>
+</header>
+
+{% if sector.image %}
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 pb-10">
+    <img src="{{ sector.image.url }}" alt="" class="w-full rounded-xl object-cover max-h-96">
+  </div>
+{% endif %}
+
+<div class="max-w-4xl mx-auto px-4 sm:px-6 pb-20">
+  {% if sector.description %}
+    <div class="prose-sm whitespace-pre-line text-graphite-soft leading-relaxed">{{ sector.description }}</div>
+  {% endif %}
+
+  {% if related_services %}
+    <section class="mt-12" data-aos="fade-up">
+      <h2 class="text-xl font-semibold mb-4">{% translate "Services in this sector" %}</h2>
+      <div class="grid sm:grid-cols-2 gap-4">
+        {% for service in related_services %}
+          <a href="{{ service.get_absolute_url }}" class="block p-5 rounded-xl border border-technical-soft bg-white hover:border-accent transition-colors">
+            <h3 class="font-semibold mb-1">{{ service.title }}</h3>
+            <p class="text-sm text-technical">{{ service.short_description }}</p>
+          </a>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+  <div class="mt-12 p-6 rounded-xl bg-white border border-technical-soft" data-aos="fade-up">
+    <h2 class="font-semibold mb-2">{% translate "Working in this sector?" %}</h2>
+    <p class="text-sm text-technical mb-4">{% translate "Tell us about the project, or register your firm as a partner." %}</p>
+    <div class="flex flex-wrap gap-3">
+      <a href="{% url 'contact:index' %}" class="bg-accent hover:bg-accent/90 text-warm-white font-medium px-5 py-2.5 rounded-md text-sm transition-colors">{% translate "Contact Us" %}</a>
+      <a href="{% url 'partners:index' %}" class="border border-technical-soft hover:border-accent font-medium px-5 py-2.5 rounded-md text-sm transition-colors">{% translate "Become a Partner" %}</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

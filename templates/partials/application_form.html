@@ -1,0 +1,58 @@
+{% load i18n %}
+{% comment %}
+The job application form, grouped into labelled sections. Shared by
+career_detail.html (applying to a specific role) and career_apply.html
+(speculative), so the two can never drift apart.
+
+enctype is multipart — without it the CV silently never arrives.
+{% endcomment %}
+<form method="post" enctype="multipart/form-data" class="space-y-8" novalidate>
+  {% csrf_token %}
+
+  {% if form.non_field_errors %}
+    <div role="alert" class="p-4 rounded-md border border-accent bg-accent/5 text-sm text-accent">
+      {{ form.non_field_errors }}
+    </div>
+  {% endif %}
+
+  <fieldset class="space-y-5">
+    <legend class="text-sm font-semibold uppercase tracking-wide text-technical mb-3">{% translate "About you" %}</legend>
+    {% include "partials/form_field.html" with field=form.full_name %}
+    <div class="grid sm:grid-cols-2 gap-5">
+      {% include "partials/form_field.html" with field=form.email %}
+      {% include "partials/form_field.html" with field=form.phone %}
+    </div>
+    {% include "partials/form_field.html" with field=form.location %}
+  </fieldset>
+
+  <fieldset class="space-y-5">
+    <legend class="text-sm font-semibold uppercase tracking-wide text-technical mb-3">{% translate "Experience" %}</legend>
+    <div class="grid sm:grid-cols-2 gap-5">
+      {% include "partials/form_field.html" with field=form.years_experience %}
+      {% include "partials/form_field.html" with field=form.current_employer %}
+      {% include "partials/form_field.html" with field=form.notice_period %}
+      {% include "partials/form_field.html" with field=form.expected_salary %}
+    </div>
+    <div class="grid sm:grid-cols-2 gap-5">
+      {% include "partials/form_field.html" with field=form.linkedin_url %}
+      {% include "partials/form_field.html" with field=form.portfolio_url %}
+    </div>
+  </fieldset>
+
+  <fieldset class="space-y-5">
+    <legend class="text-sm font-semibold uppercase tracking-wide text-technical mb-3">{% translate "Documents" %}</legend>
+    {% include "partials/form_field.html" with field=form.cv_file %}
+    {% include "partials/form_field.html" with field=form.cover_letter_file %}
+    {% include "partials/form_field.html" with field=form.cover_note %}
+  </fieldset>
+
+  <fieldset class="space-y-5">
+    <legend class="text-sm font-semibold uppercase tracking-wide text-technical mb-3">{% translate "Finally" %}</legend>
+    {% include "partials/form_field.html" with field=form.heard_about %}
+    {% include "partials/form_field_checkbox.html" with field=form.consent %}
+  </fieldset>
+
+  <button type="submit" class="w-full sm:w-auto bg-accent hover:bg-accent/90 text-warm-white font-medium px-8 py-3 rounded-md transition-colors">
+    {% translate "Submit application" %}
+  </button>
+</form>

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block meta_title %}{% translate "Careers" %} · ConsultX{% endblock %}
+
+{% block content %}
+<header class="max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-10">
+  <h1 class="text-3xl sm:text-4xl font-semibold">{% translate "Careers" %}</h1>
+  <p class="mt-3 text-technical max-w-2xl">{% translate "Engineering work with real accountability. Open roles are listed below." %}</p>
+</header>
+
+<div class="max-w-6xl mx-auto px-4 sm:px-6 pb-20">
+  {% if openings %}
+    <div class="space-y-4">
+      {% for opening in openings %}
+        <a href="{{ opening.get_absolute_url }}" data-aos="fade-up" data-aos-delay="{% widthratio forloop.counter0 1 100 %}"
+           class="block p-6 rounded-xl border border-technical-soft bg-white hover:border-accent transition-colors">
+          <div class="flex flex-wrap items-start justify-between gap-4">
+            <div class="min-w-0">
+              {% if opening.department %}
+                <p class="text-xs uppercase tracking-wide text-accent mb-1">{{ opening.department }}</p>
+              {% endif %}
+              <h2 class="font-semibold text-lg">{{ opening.title }}</h2>
+              <p class="text-sm text-technical mt-1">{{ opening.summary }}</p>
+            </div>
+            <span class="text-sm font-medium text-accent whitespace-nowrap">{% translate "View role" %} &rarr;</span>
+          </div>
+          <ul class="mt-4 flex flex-wrap gap-2 text-xs text-technical">
+            <li class="px-3 py-1 rounded-full border border-technical-soft">{{ opening.location }}</li>
+            <li class="px-3 py-1 rounded-full border border-technical-soft">{{ opening.get_workplace_type_display }}</li>
+            <li class="px-3 py-1 rounded-full border border-technical-soft">{{ opening.get_employment_type_display }}</li>
+            {% if opening.closing_date %}
+              <li class="px-3 py-1 rounded-full border border-technical-soft">
+                {% blocktranslate with date=opening.closing_date|date:"j M Y" %}Closes {{ date }}{% endblocktranslate %}
+              </li>
+            {% endif %}
+          </ul>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="p-8 rounded-xl border border-technical-soft bg-white text-center">
+      <p class="font-medium">{% translate "No open roles right now." %}</p>
+      <p class="mt-2 text-sm text-technical">{% translate "We still read every speculative application." %}</p>
+    </div>
+  {% endif %}
+
+  {# Always offered, whether or not roles are listed — a good candidate
+     arriving on an empty careers page should still have somewhere to go. #}
+  <div class="mt-10 p-6 rounded-xl bg-white border border-technical-soft flex flex-wrap items-center justify-between gap-4" data-aos="fade-up">
+    <div>
+      <h2 class="font-semibold">{% translate "Nothing matching your discipline?" %}</h2>
+      <p class="text-sm text-technical mt-1">{% translate "Send a speculative application and we'll keep it on file." %}</p>
+    </div>
+    <a href="{% url 'careers:apply' %}" class="bg-accent hover:bg-accent/90 text-warm-white font-medium px-6 py-3 rounded-md text-sm transition-colors">
+      {% translate "Apply speculatively" %}
+    </a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block meta_title %}{% translate "Speculative application" %} · {% translate "Careers" %} · ConsultX{% endblock %}
+
+{% block content %}
+<header class="max-w-3xl mx-auto px-4 sm:px-6 pt-16 pb-8">
+  <a href="{% url 'careers:list' %}" class="text-sm text-accent hover:underline">&larr; {% translate "All open roles" %}</a>
+  <h1 class="mt-6 text-3xl sm:text-4xl font-semibold">{% translate "Speculative application" %}</h1>
+  <p class="mt-3 text-technical">
+    {% translate "No specific role attached. Tell us what you do and we'll get in touch when something matching opens." %}
+  </p>
+</header>
+
+<div class="max-w-3xl mx-auto px-4 sm:px-6 pb-20">
+  {% include "partials/application_form.html" %}
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block meta_title %}{{ opening.meta_title|default:opening.title }} · {% translate "Careers" %} · ConsultX{% endblock %}
+{% block meta_description %}{{ opening.meta_description|default:opening.summary }}{% endblock %}
+
+{% block content %}
+<header class="max-w-3xl mx-auto px-4 sm:px-6 pt-16 pb-8">
+  <a href="{% url 'careers:list' %}" class="text-sm text-accent hover:underline">&larr; {% translate "All open roles" %}</a>
+  {% if opening.department %}
+    <p class="mt-6 text-xs uppercase tracking-wide text-accent">{{ opening.department }}</p>
+  {% endif %}
+  <h1 class="mt-2 text-3xl sm:text-4xl font-semibold">{{ opening.title }}</h1>
+  <ul class="mt-4 flex flex-wrap gap-2 text-xs text-technical">
+    <li class="px-3 py-1 rounded-full border border-technical-soft">{{ opening.location }}</li>
+    <li class="px-3 py-1 rounded-full border border-technical-soft">{{ opening.get_workplace_type_display }}</li>
+    <li class="px-3 py-1 rounded-full border border-technical-soft">{{ opening.get_employment_type_display }}</li>
+    {% if opening.closing_date %}
+      <li class="px-3 py-1 rounded-full border border-technical-soft">
+        {% blocktranslate with date=opening.closing_date|date:"j M Y" %}Closes {{ date }}{% endblocktranslate %}
+      </li>
+    {% endif %}
+  </ul>
+</header>
+
+<div class="max-w-3xl mx-auto px-4 sm:px-6 pb-20">
+  <div class="whitespace-pre-line text-graphite-soft leading-relaxed">{{ opening.description }}</div>
+
+  {% if opening.requirement_list %}
+    <section class="mt-10">
+      <h2 class="text-xl font-semibold mb-3">{% translate "What we're looking for" %}</h2>
+      <ul class="space-y-2">
+        {% for requirement in opening.requirement_list %}
+          <li class="flex items-start gap-2 text-sm text-graphite-soft">
+            <span class="text-accent mt-0.5" aria-hidden="true">&check;</span>
+            <span>{{ requirement }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+    </section>
+  {% endif %}
+
+  <section class="mt-14 pt-10 border-t border-technical-soft">
+    <h2 id="apply" class="text-2xl font-semibold">{% translate "Apply for this role" %}</h2>
+
+    {% if form %}
+      <p class="mt-2 mb-8 text-sm text-technical">
+        {% blocktranslate with title=opening.title %}Your application will be recorded against {{ title }}.{% endblocktranslate %}
+      </p>
+      {% include "partials/application_form.html" %}
+    {% else %}
+      {# Reached when the role is open but past its closing date. #}
+      <div class="mt-4 p-6 rounded-xl border border-technical-soft bg-white">
+        <p class="font-medium">{% translate "This role has closed." %}</p>
+        <p class="mt-2 text-sm text-technical">{% translate "You can still send a speculative application and we'll keep it on file." %}</p>
+        <a href="{% url 'careers:apply' %}" class="inline-block mt-4 bg-accent hover:bg-accent/90 text-warm-white font-medium px-6 py-3 rounded-md text-sm transition-colors">
+          {% translate "Apply speculatively" %}
+        </a>
+      </div>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

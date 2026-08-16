@@ -15,8 +15,12 @@ urlpatterns += i18n_patterns(
     path("", include("apps.home.urls")),
     path("", include("apps.team.urls")),
     path("services/", include("apps.services.urls")),
+    path("sectors/", include("apps.sectors.urls")),
     path("projects/", include("apps.projects.urls")),
     path("insights/", include("apps.blog.urls")),
+    path("publications/", include("apps.publications.urls")),
+    path("careers/", include("apps.careers.urls")),
+    path("partners/", include("apps.partners.urls")),
     path("contact/", include("apps.contact.urls")),
     prefix_default_language=False,
 )

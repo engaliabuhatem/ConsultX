@@ -1,0 +1,25 @@
+{% load i18n form_tags %}
+{% comment %}
+Checkbox variant of form_field.html: the control sits *before* the label
+rather than under it, so the standard vertical layout doesn't apply. Same
+ARIA contract otherwise.
+{% endcomment %}
+<div>
+  <div class="flex items-start gap-3">
+    <div class="pt-0.5">{{ field|render_accessible }}</div>
+    <label for="{{ field.id_for_label }}" class="text-sm text-graphite-soft">
+      {{ field.label }}{% if field.field.required %}<span class="text-accent" aria-hidden="true"> *</span><span class="sr-only"> ({% translate "required" %})</span>{% endif %}
+    </label>
+  </div>
+
+  {% if field.help_text %}
+    <p id="{{ field.auto_id }}_help" class="mt-1 ms-7 text-xs text-technical">{{ field.help_text }}</p>
+  {% endif %}
+
+  {% if field.errors %}
+    <p id="{{ field.auto_id }}_error" role="alert" class="mt-1.5 ms-7 flex items-start gap-1.5 text-sm text-accent font-medium">
+      <span aria-hidden="true">!</span>
+      <span>{{ field.errors|striptags }}</span>
+    </p>
+  {% endif %}
+</div>

@@ -14,6 +14,12 @@ class TeamMember(OrderedModel, TimeStampedModel):
     photo = models.ImageField(upload_to="team/", blank=True, null=True)
     linkedin_url = models.URLField(blank=True)
     is_founder = models.BooleanField(default=False)
+    is_leadership = models.BooleanField(
+        default=False,
+        help_text="Shown on the Leadership page. Kept separate from 'is founder' "
+                  "because a firm's leadership and its founders are not the same set — "
+                  "a hired managing director is one but not the other.",
+    )
 
     class Meta:
         ordering = ["order"]

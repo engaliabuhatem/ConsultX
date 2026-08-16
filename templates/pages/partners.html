@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block meta_title %}{% translate "Become a Partner" %} · ConsultX{% endblock %}
+{% block meta_description %}{% translate "Register your firm as a sub-consultant, joint venture partner, supplier or technology partner." %}{% endblock %}
+
+{% block content %}
+<header class="max-w-3xl mx-auto px-4 sm:px-6 pt-16 pb-8">
+  <h1 class="text-3xl sm:text-4xl font-semibold">{% translate "Become a Partner" %}</h1>
+  <p class="mt-3 text-technical">
+    {% translate "We work with specialist sub-consultants, joint venture partners, suppliers and technology providers. Register your firm below and we'll assess the fit." %}
+  </p>
+</header>
+
+<div class="max-w-3xl mx-auto px-4 sm:px-6 pb-20">
+
+  <div class="mb-10 p-5 rounded-xl border border-technical-soft bg-white text-sm text-technical">
+    <p class="font-medium text-graphite mb-1">{% translate "What happens next" %}</p>
+    <p>{% translate "This is a first-stage registration, not a full prequalification. If there's a fit, we'll request the formal documentation by email — audited accounts, insurance certificates and signed declarations are never collected through this form." %}</p>
+  </div>
+
+  <form method="post" enctype="multipart/form-data" class="space-y-8" novalidate>
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+      <div role="alert" class="p-4 rounded-md border border-accent bg-accent/5 text-sm text-accent">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    <fieldset class="space-y-5">
+      <legend class="text-sm font-semibold uppercase tracking-wide text-technical mb-3">{% translate "Company" %}</legend>
+      {% include "partials/form_field.html" with field=form.company_name %}
+      <div class="grid sm:grid-cols-2 gap-5">
+        {% include "partials/form_field.html" with field=form.registration_number %}
+        {% include "partials/form_field.html" with field=form.tax_id %}
+        {% include "partials/form_field.html" with field=form.country %}
+        {% include "partials/form_field.html" with field=form.city %}
+        {% include "partials/form_field.html" with field=form.year_established %}
+        {% include "partials/form_field.html" with field=form.employee_count %}
+      </div>
+      {% include "partials/form_field.html" with field=form.website %}
+    </fieldset>
+
+    <fieldset class="space-y-5">
+      <legend class="text-sm font-semibold uppercase tracking-wide text-technical mb-3">{% translate "Primary contact" %}</legend>
+      <div class="grid sm:grid-cols-2 gap-5">
+        {% include "partials/form_field.html" with field=form.contact_name %}
+        {% include "partials/form_field.html" with field=form.contact_title %}
+        {% include "partials/form_field.html" with field=form.contact_email %}
+        {% include "partials/form_field.html" with field=form.contact_phone %}
+      </div>
+    </fieldset>
+
+    <fieldset class="space-y-5">
+      <legend class="text-sm font-semibold uppercase tracking-wide text-technical mb-3">{% translate "Capability" %}</legend>
+      {% include "partials/form_field.html" with field=form.partnership_type %}
+      {% include "partials/form_field.html" with field=form.sectors %}
+      {% include "partials/form_field.html" with field=form.capabilities %}
+      {% include "partials/form_field.html" with field=form.key_clients %}
+      {% include "partials/form_field.html" with field=form.annual_turnover %}
+    </fieldset>
+
+    <fieldset class="space-y-5">
+      <legend class="text-sm font-semibold uppercase tracking-wide text-technical mb-3">{% translate "Standing and disclosure" %}</legend>
+      {% include "partials/form_field.html" with field=form.certifications %}
+      {% include "partials/form_field_checkbox.html" with field=form.has_professional_indemnity %}
+      {% include "partials/form_field_checkbox.html" with field=form.has_conflict_of_interest %}
+      {% include "partials/form_field.html" with field=form.conflict_details %}
+    </fieldset>
+
+    <fieldset class="space-y-5">
+      <legend class="text-sm font-semibold uppercase tracking-wide text-technical mb-3">{% translate "Documents" %}</legend>
+      {% include "partials/form_field.html" with field=form.company_profile_file %}
+      {% include "partials/form_field.html" with field=form.trade_licence_file %}
+    </fieldset>
+
+    <fieldset class="space-y-5">
+      <legend class="text-sm font-semibold uppercase tracking-wide text-technical mb-3">{% translate "Finally" %}</legend>
+      {% include "partials/form_field.html" with field=form.message %}
+      {% include "partials/form_field_checkbox.html" with field=form.consent %}
+    </fieldset>
+
+    <button type="submit" class="w-full sm:w-auto bg-accent hover:bg-accent/90 text-warm-white font-medium px-8 py-3 rounded-md transition-colors">
+      {% translate "Submit registration" %}
+    </button>
+  </form>
+</div>
+{% endblock %}

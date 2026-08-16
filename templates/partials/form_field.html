@@ -1,0 +1,33 @@
+{% load i18n form_tags %}
+{% comment %}
+Renders one form field with the accessibility wiring that the raw {{ field }}
+loop in pages/contact.html does not do:
+
+  - a visible <label>, never a placeholder standing in for one (a placeholder
+    disappears on first keystroke, taking the field's meaning with it)
+  - help text and error text linked by aria-describedby, so a screen reader
+    announces them on focus instead of leaving them orphaned
+  - aria-invalid on the control itself
+  - role="alert" on the error, so it is announced when it appears
+  - errors never signalled by colour alone — there is a "!" glyph too
+
+Usage: {% include "partials/form_field.html" with field=form.full_name %}
+{% endcomment %}
+<div>
+  <label for="{{ field.id_for_label }}" class="block text-sm font-medium mb-1.5">
+    {{ field.label }}{% if field.field.required %}<span class="text-accent" aria-hidden="true"> *</span><span class="sr-only"> ({% translate "required" %})</span>{% endif %}
+  </label>
+
+  {% if field.help_text %}
+    <p id="{{ field.auto_id }}_help" class="text-xs text-technical mb-1.5">{{ field.help_text }}</p>
+  {% endif %}
+
+  {{ field|render_accessible }}
+
+  {% if field.errors %}
+    <p id="{{ field.auto_id }}_error" role="alert" class="mt-1.5 flex items-start gap-1.5 text-sm text-accent font-medium">
+      <span aria-hidden="true">!</span>
+      <span>{{ field.errors|striptags }}</span>
+    </p>
+  {% endif %}
+</div>

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block meta_title %}{% translate "Leadership" %} · ConsultX{% endblock %}
+
+{% block content %}
+<header class="max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-10">
+  <h1 class="text-3xl sm:text-4xl font-semibold">{% translate "Leadership" %}</h1>
+  <p class="mt-3 text-technical max-w-2xl">{% translate "The people accountable for the engineering decisions we sign off on." %}</p>
+</header>
+
+<div class="max-w-6xl mx-auto px-4 sm:px-6 pb-20">
+  {% if leaders %}
+    {# Wider cards than /team/: leadership profiles carry a full bio, so the
+       layout gives the text room instead of reusing the 4-up avatar grid. #}
+    <div class="grid md:grid-cols-2 gap-8">
+      {% for leader in leaders %}
+        <article data-aos="fade-up" data-aos-delay="{% widthratio forloop.counter0 1 100 %}"
+                 class="flex gap-5 p-6 rounded-xl border border-technical-soft bg-white">
+          {% if leader.photo %}
+            <img src="{{ leader.photo.url }}" alt="{{ leader.name }}" class="rounded-full h-24 w-24 object-cover shrink-0">
+          {% else %}
+            <div class="rounded-full h-24 w-24 bg-graphite-soft shrink-0" aria-hidden="true"></div>
+          {% endif %}
+          <div class="min-w-0">
+            <h2 class="font-semibold text-lg">{{ leader.name }}</h2>
+            <p class="text-sm text-accent font-medium">{{ leader.title }}</p>
+            {% if leader.credentials %}
+              <p class="text-xs text-technical mt-1">{{ leader.credentials }}</p>
+            {% endif %}
+            {% if leader.bio %}
+              <p class="text-sm text-graphite-soft mt-3 leading-relaxed">{{ leader.bio }}</p>
+            {% endif %}
+            {% if leader.linkedin_url %}
+              <a href="{{ leader.linkedin_url }}" class="inline-block mt-3 text-xs font-medium text-accent hover:underline">
+                LinkedIn<span class="sr-only"> — {{ leader.name }}</span>
+              </a>
+            {% endif %}
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+
+    <p class="mt-10 text-sm text-technical">
+      {% url 'team:list' as team_url %}
+      {% blocktranslate %}Looking for the wider team? <a href="{{ team_url }}" class="text-accent hover:underline">See everyone</a>.{% endblocktranslate %}
+    </p>
+  {% else %}
+    <p class="text-technical text-sm italic">
+      {% translate "Leadership profiles will appear here once team members are marked as leadership in the admin panel." %}
+    </p>
+  {% endif %}
+</div>
+{% endblock %}

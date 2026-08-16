@@ -1,0 +1,26 @@
+{% load i18n %}
+{% comment %}
+The ten primary nav links, defined once and included by both the desktop bar
+and the mobile drawer in nav.html. Duplicating them was fine at five items;
+at ten it guarantees the two menus drift apart.
+
+Caller passes:
+  link_class   base classes for each <a>
+  active_class classes added to the link matching the current view
+
+Active state is matched on resolver_match.view_name ("team:leadership"), not
+on namespace — team owns both About and Leadership, so namespace alone would
+light up two links at once.
+{% endcomment %}
+{% with vn=request.resolver_match.view_name %}
+  <a href="{% url 'home:index' %}" class="{{ link_class }} {% if vn == 'home:index' %}{{ active_class }}{% endif %}"{% if vn == 'home:index' %} aria-current="page"{% endif %}>{% translate "Home" %}</a>
+  <a href="{% url 'team:about' %}" class="{{ link_class }} {% if vn == 'team:about' %}{{ active_class }}{% endif %}"{% if vn == 'team:about' %} aria-current="page"{% endif %}>{% translate "About" %}</a>
+  <a href="{% url 'services:list' %}" class="{{ link_class }} {% if 'services:' in vn %}{{ active_class }}{% endif %}"{% if 'services:' in vn %} aria-current="page"{% endif %}>{% translate "Services" %}</a>
+  <a href="{% url 'sectors:list' %}" class="{{ link_class }} {% if 'sectors:' in vn %}{{ active_class }}{% endif %}"{% if 'sectors:' in vn %} aria-current="page"{% endif %}>{% translate "Sectors" %}</a>
+  <a href="{% url 'projects:list' %}" class="{{ link_class }} {% if 'projects:' in vn %}{{ active_class }}{% endif %}"{% if 'projects:' in vn %} aria-current="page"{% endif %}>{% translate "Projects" %}</a>
+  <a href="{% url 'team:leadership' %}" class="{{ link_class }} {% if vn == 'team:leadership' %}{{ active_class }}{% endif %}"{% if vn == 'team:leadership' %} aria-current="page"{% endif %}>{% translate "Leadership" %}</a>
+  <a href="{% url 'publications:list' %}" class="{{ link_class }} {% if 'publications:' in vn %}{{ active_class }}{% endif %}"{% if 'publications:' in vn %} aria-current="page"{% endif %}>{% translate "Publications" %}</a>
+  <a href="{% url 'partners:index' %}" class="{{ link_class }} {% if 'partners:' in vn %}{{ active_class }}{% endif %}"{% if 'partners:' in vn %} aria-current="page"{% endif %}>{% translate "Partner" %}</a>
+  <a href="{% url 'careers:list' %}" class="{{ link_class }} {% if 'careers:' in vn %}{{ active_class }}{% endif %}"{% if 'careers:' in vn %} aria-current="page"{% endif %}>{% translate "Careers" %}</a>
+  <a href="{% url 'contact:index' %}" class="{{ link_class }} {% if 'contact:' in vn %}{{ active_class }}{% endif %}"{% if 'contact:' in vn %} aria-current="page"{% endif %}>{% translate "Contact Us" %}</a>
+{% endwith %}

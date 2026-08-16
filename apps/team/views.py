@@ -19,3 +19,12 @@ class TeamListView(ListView):
     model = TeamMember
     template_name = "pages/team.html"
     context_object_name = "team_members"
+
+
+class LeadershipListView(ListView):
+    model = TeamMember
+    template_name = "pages/leadership.html"
+    context_object_name = "leaders"
+
+    def get_queryset(self):
+        return TeamMember.objects.filter(is_leadership=True)
