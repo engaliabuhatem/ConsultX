@@ -31,7 +31,7 @@
       <p class="text-sm text-technical">{% translate "No registration required." %}</p>
     </div>
     <a href="{{ publication.pdf_file.url }}" download
-       class="bg-accent hover:bg-accent/90 text-warm-white font-medium px-6 py-3 rounded-md text-sm transition-colors">
+       class="btn btn-accent">
       {% translate "Download" %}{% if publication.file_extension %} ({{ publication.file_extension }}){% endif %}
     </a>
   </div>

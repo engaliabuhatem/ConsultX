@@ -3,6 +3,12 @@
 Primary navigation. Structure comes from apps/core/navigation.py so the
 desktop bar and the mobile drawer below cannot drift apart.
 
+Two modes, one markup. Pages set nav_overlay=True in their context (see
+apps/home/views.py) when the header sits *over* a full-bleed hero: it then
+starts transparent and turns ink-solid on scroll, matching the design comp.
+Every other page gets the solid bar from the first frame — a transparent
+header over a paper-colored page would be invisible.
+
 Dropdowns follow the W3C APG *Disclosure Navigation* pattern, not the
 menubar pattern: these hold links, not commands, so the native <ul>/<a>
 semantics are left intact and the only ARIA is aria-expanded + aria-controls
@@ -15,16 +21,22 @@ button, closes when focus leaves the group, and closes on outside click.
 Hover-to-open is gated on (hover: hover) so a touch tap doesn't open and
 immediately re-close the panel.
 {% endcomment %}
-<header class="sticky top-0 z-40 bg-warm-white/95 backdrop-blur border-b border-technical-soft">
+<header class="{% if nav_overlay %}fixed{% else %}sticky{% endif %} top-0 inset-x-0 z-50 site-header {% if not nav_overlay %}site-header-solid{% endif %}"
+        {% if nav_overlay %}x-data="{ scrolled: false }"
+        @scroll.window="scrolled = window.scrollY > 40"
+        :class="(scrolled || mobileNavOpen) && 'site-header-solid'"{% endif %}>
   <div class="max-w-7xl mx-auto px-4 sm:px-6">
-    <div class="flex items-center justify-between h-16 gap-6">
+    <div class="flex items-center justify-between h-16 lg:h-[4.5rem] gap-6">
 
-      <a href="{% url 'home:index' %}" class="flex items-center gap-2 font-semibold text-lg tracking-tight text-graphite shrink-0">
+      <a href="{% url 'home:index' %}" class="flex items-center gap-2.5 shrink-0 group">
         {% if site_settings.logo %}
           <img src="{{ site_settings.logo.url }}" alt="ConsultX" class="h-8 w-auto">
         {% else %}
-          <span>ConsultX</span>
+          <span class="font-display font-bold text-lg tracking-tight text-white">
+            <span class="text-gold">C</span>onsultX
+          </span>
         {% endif %}
+        <span class="tripill" aria-hidden="true"><span></span><span></span><span></span></span>
       </a>
 
       <nav class="hidden lg:block" aria-label="{% translate 'Primary navigation' %}">
@@ -42,8 +54,8 @@ immediately re-close the panel.
                         id="nav-{{ item.key }}-trigger"
                         aria-controls="nav-{{ item.key }}"
                         :aria-expanded="open ? 'true' : 'false'"
-                        class="flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap
-                               {% if item.is_current %}text-accent{% else %}text-graphite-soft hover:text-accent{% endif %}">
+                        class="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm transition-colors whitespace-nowrap
+                               {% if item.is_current %}text-gold font-semibold{% else %}text-white/80 hover:text-white font-medium{% endif %}">
                   {{ item.label }}
                   <svg class="h-4 w-4 transition-transform duration-150" :class="open && 'rotate-180'"
                        viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -54,15 +66,15 @@ immediately re-close the panel.
                 <ul id="nav-{{ item.key }}" x-show="open" x-cloak
                     x-transition:enter="nav-dropdown-enter"
                     aria-labelledby="nav-{{ item.key }}-trigger"
-                    class="absolute start-0 top-full mt-1 w-72 p-2 rounded-xl border border-technical-soft bg-white shadow-lg">
+                    class="absolute start-0 top-full mt-2 w-72 p-2 rounded-2xl border border-white/10 bg-ink/95 backdrop-blur shadow-2xl shadow-black/40">
                   {% for child in item.children %}
                     <li>
                       <a href="{{ child.url }}"{% if child.is_current %} aria-current="page"{% endif %}
-                         class="block px-3 py-2.5 rounded-lg transition-colors hover:bg-accent/5
-                                {% if child.is_current %}bg-accent/5{% endif %}">
-                        <span class="block text-sm font-medium {% if child.is_current %}text-accent{% else %}text-graphite{% endif %}">{{ child.label }}</span>
+                         class="block px-3 py-2.5 rounded-xl transition-colors hover:bg-white/8
+                                {% if child.is_current %}bg-white/8{% endif %}">
+                        <span class="block text-sm font-medium {% if child.is_current %}text-gold{% else %}text-white{% endif %}">{{ child.label }}</span>
                         {% if child.blurb %}
-                          <span class="block mt-0.5 text-xs text-technical">{{ child.blurb }}</span>
+                          <span class="block mt-0.5 text-xs text-white/55">{{ child.blurb }}</span>
                         {% endif %}
                       </a>
                     </li>
@@ -72,15 +84,15 @@ immediately re-close the panel.
             {% elif item.cta %}
               <li class="ms-2">
                 <a href="{{ item.url }}"{% if item.is_current %} aria-current="page"{% endif %}
-                   class="inline-block px-4 py-2 rounded-md text-sm font-medium bg-accent text-warm-white hover:bg-accent/90 transition-colors whitespace-nowrap">
+                   class="btn-ghost inline-block whitespace-nowrap">
                   {{ item.label }}
                 </a>
               </li>
             {% else %}
               <li>
                 <a href="{{ item.url }}"{% if item.is_current %} aria-current="page"{% endif %}
-                   class="block px-3 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap
-                          {% if item.is_current %}text-accent{% else %}text-graphite-soft hover:text-accent{% endif %}">
+                   class="block px-3 py-2 rounded-full text-sm transition-colors whitespace-nowrap
+                          {% if item.is_current %}text-gold font-semibold{% else %}text-white/80 hover:text-white font-medium{% endif %}">
                   {{ item.label }}
                 </a>
               </li>
@@ -95,22 +107,23 @@ immediately re-close the panel.
           <input name="next" type="hidden" value="{{ request.path }}">
           <label for="lang-desktop" class="sr-only">{% translate "Language" %}</label>
           <select id="lang-desktop" name="language" onchange="this.form.submit()"
-                  class="text-sm border border-technical-soft rounded-md bg-white ps-3 pe-8 py-1.5 text-graphite-soft">
+                  class="text-xs border border-white/25 rounded-full bg-transparent ps-3 pe-7 py-1.5 text-white/80 hover:text-white transition-colors cursor-pointer">
             {% get_current_language as CURRENT_LANGUAGE %}
             {% get_available_languages as LANGUAGES %}
             {% for code, label in LANGUAGES %}
-              <option value="{{ code }}" {% if code == CURRENT_LANGUAGE %}selected{% endif %}>
+              <option class="text-ink" value="{{ code }}" {% if code == CURRENT_LANGUAGE %}selected{% endif %}>
                 {% if code == "ar" %}العربية{% else %}{{ label }}{% endif %}
               </option>
             {% endfor %}
           </select>
         </form>
 
-        <button @click="mobileNavOpen = !mobileNavOpen" class="lg:hidden p-2 -me-2"
+        <button @click="mobileNavOpen = !mobileNavOpen" class="lg:hidden p-2 -me-2 text-white"
                 :aria-expanded="mobileNavOpen ? 'true' : 'false'" aria-controls="mobile-nav"
                 aria-label="{% translate 'Toggle menu' %}">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            <path x-show="!mobileNavOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            <path x-show="mobileNavOpen" x-cloak stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
       </div>
@@ -120,9 +133,9 @@ immediately re-close the panel.
       Mobile: same tree, accordion instead of dropdowns — hover doesn't exist
       and an overlay panel inside a drawer is a focus trap waiting to happen.
     {% endcomment %}
-    <nav id="mobile-nav" x-show="mobileNavOpen" x-cloak class="lg:hidden pb-4"
+    <nav id="mobile-nav" x-show="mobileNavOpen" x-cloak class="lg:hidden pb-6 max-h-[calc(100svh-4rem)] overflow-y-auto"
          aria-label="{% translate 'Mobile navigation' %}">
-      <ul class="flex flex-col gap-1">
+      <ul class="flex flex-col gap-0.5 border-t border-white/10 pt-3">
         {% for item in nav_items %}
           {% if item.is_group %}
             <li x-data="{ open: {% if item.is_current %}true{% else %}false{% endif %} }"
@@ -132,7 +145,7 @@ immediately re-close the panel.
                       aria-controls="mnav-{{ item.key }}"
                       :aria-expanded="open ? 'true' : 'false'"
                       class="w-full flex items-center justify-between py-2.5 text-sm font-medium
-                             {% if item.is_current %}text-accent{% else %}text-graphite-soft{% endif %}">
+                             {% if item.is_current %}text-gold{% else %}text-white/85{% endif %}">
                 {{ item.label }}
                 <svg class="h-4 w-4 transition-transform duration-150" :class="open && 'rotate-180'"
                      viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -141,22 +154,29 @@ immediately re-close the panel.
               </button>
               <ul id="mnav-{{ item.key }}" x-show="open" x-cloak
                   aria-labelledby="mnav-{{ item.key }}-trigger"
-                  class="ms-3 ps-3 border-s border-technical-soft flex flex-col gap-1 pb-2">
+                  class="ms-3 ps-3 border-s border-white/15 flex flex-col gap-1 pb-2">
                 {% for child in item.children %}
                   <li>
                     <a href="{{ child.url }}"{% if child.is_current %} aria-current="page"{% endif %}
-                       class="block py-2 text-sm {% if child.is_current %}text-accent font-medium{% else %}text-graphite-soft{% endif %}">
+                       class="block py-2 text-sm {% if child.is_current %}text-gold font-medium{% else %}text-white/70{% endif %}">
                       {{ child.label }}
                     </a>
                   </li>
                 {% endfor %}
               </ul>
             </li>
+          {% elif item.cta %}
+            <li class="pt-3">
+              <a href="{{ item.url }}"{% if item.is_current %} aria-current="page"{% endif %}
+                 class="btn btn-gold w-full justify-center">
+                {{ item.label }}
+              </a>
+            </li>
           {% else %}
             <li>
               <a href="{{ item.url }}"{% if item.is_current %} aria-current="page"{% endif %}
                  class="block py-2.5 text-sm font-medium
-                        {% if item.is_current %}text-accent{% else %}text-graphite-soft{% endif %}">
+                        {% if item.is_current %}text-gold{% else %}text-white/85{% endif %}">
                 {{ item.label }}
               </a>
             </li>
@@ -168,11 +188,12 @@ immediately re-close the panel.
         {% csrf_token %}
         <input name="next" type="hidden" value="{{ request.path }}">
         <label for="lang-mobile" class="sr-only">{% translate "Language" %}</label>
-        <select id="lang-mobile" name="language" onchange="this.form.submit()" class="text-sm border border-technical-soft rounded-md bg-white px-3 py-1.5">
+        <select id="lang-mobile" name="language" onchange="this.form.submit()"
+                class="text-xs border border-white/25 rounded-full bg-transparent px-3 py-1.5 text-white/80">
           {% get_current_language as CURRENT_LANGUAGE %}
           {% get_available_languages as LANGUAGES %}
           {% for code, label in LANGUAGES %}
-            <option value="{{ code }}" {% if code == CURRENT_LANGUAGE %}selected{% endif %}>
+            <option class="text-ink" value="{{ code }}" {% if code == CURRENT_LANGUAGE %}selected{% endif %}>
               {% if code == "ar" %}العربية{% else %}{{ label }}{% endif %}
             </option>
           {% endfor %}

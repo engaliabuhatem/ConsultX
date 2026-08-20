@@ -1,0 +1,37 @@
+{% load i18n %}
+{% comment %}
+The opening band on every page that isn't the homepage.
+
+A compact, ink-dark echo of the homepage's chapter sections: brushed plate,
+grain, gold eyebrow, display heading, gold rule. It exists so an inner page
+starts with the same voice the homepage does instead of a bare heading on
+paper, and so the sticky ink header always has something dark to sit on.
+
+Usage — every argument except `title` is optional:
+
+  {% include "partials/page_header.html" with eyebrow=... title=... subtitle=... width="max-w-3xl" %}
+
+`eyebrow` is a short category word, `subtitle` a single line. Anything
+longer belongs in the page body, not here.
+
+`width` must match the max-width the page's own content uses, or the
+heading and the content beneath it start on two different left edges. It
+defaults to max-w-7xl, which is what the header bar and the homepage use.
+{% endcomment %}
+<header class="relative overflow-hidden bg-ink-deep text-white">
+  <div class="brushed absolute inset-0" aria-hidden="true"></div>
+  <div class="grain absolute inset-0" aria-hidden="true"></div>
+
+  <div class="relative {{ width|default:'max-w-7xl' }} mx-auto px-4 sm:px-6 pt-14 pb-12 sm:pt-16 sm:pb-14">
+    {% if eyebrow %}
+      <p class="eyebrow text-gold mb-4">{{ eyebrow }}</p>
+    {% endif %}
+    <h1 class="font-display font-bold text-[clamp(1.9rem,4.2vw,3.2rem)] leading-[1.06] max-w-[18ch]">
+      {{ title }}
+    </h1>
+    {% if subtitle %}
+      <p class="mt-4 max-w-[54ch] leading-relaxed text-white/70">{{ subtitle }}</p>
+    {% endif %}
+    <span class="rule bg-gold block mt-7" aria-hidden="true"></span>
+  </div>
+</header>

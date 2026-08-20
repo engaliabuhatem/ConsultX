@@ -6,7 +6,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block meta_title %}{{ site_settings.default_meta_title|default:"ConsultX" }}{% endblock %}</title>
   <meta name="description" content="{% block meta_description %}{{ site_settings.default_meta_description }}{% endblock %}">
+  <meta name="theme-color" content="#15150f">
+  {% if site_settings.favicon %}<link rel="icon" href="{{ site_settings.favicon.url }}">{% endif %}
   {% block canonical %}{% endblock %}
+
+  {% comment %}
+    Three families, each doing one job: Bricolage Grotesque for display
+    headings, Manrope for body and UI, Fraunces italic for the pull-quote
+    kickers. preconnect first — the stylesheet request and the font-file
+    request go to two different origins, and gstatic is the slow one.
+  {% endcomment %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Manrope:wght@400;500;600;700;800&family=Fraunces:ital,wght@0,500;1,400;1,500&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="{% static 'css/output.css' %}">
   {% if site_settings.accent_color %}
@@ -35,9 +47,9 @@
   <script src="{% static 'js/animations.js' %}" defer></script>
   {% block extra_head %}{% endblock %}
 </head>
-<body class="min-h-screen flex flex-col bg-warm-white text-graphite antialiased" x-data="{ mobileNavOpen: false }">
+<body class="min-h-screen flex flex-col bg-paper text-ink antialiased" x-data="{ mobileNavOpen: false }">
 
-  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:start-2 focus:z-50 focus:bg-accent focus:text-warm-white focus:px-4 focus:py-2 focus:rounded">
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:start-2 focus:z-50 focus:bg-gold focus:text-ink focus:px-4 focus:py-2 focus:rounded-full focus:font-semibold">
     {% translate "Skip to content" %}
   </a>
 
@@ -47,7 +59,7 @@
     {% if messages %}
       <div class="max-w-3xl mx-auto px-4 pt-6 space-y-3">
         {% for message in messages %}
-          <div class="rounded-lg border border-technical-soft bg-white px-4 py-3 text-sm">{{ message }}</div>
+          <div class="rounded-xl border border-stone-line bg-white px-4 py-3 text-sm shadow-sm">{{ message }}</div>
         {% endfor %}
       </div>
     {% endif %}

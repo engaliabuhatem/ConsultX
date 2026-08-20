@@ -21,8 +21,59 @@ Visit `/` for the site and `/admin/` for the admin panel.
 
 Templates and Python source both define Tailwind classes (see
 `apps/core/forms.py`), so **re-run `npm run build:css` after adding classes
-in either** — a class that exists only in a `.py` file still needs the
-rebuild to reach `static/css/output.css`.
+in either**. Tailwind's automatic source detection only walks markup, so
+`assets/input.css` carries an explicit `@source "../apps/**/*.py"` — without
+it, a utility used only in a widget class string is dropped from the build
+silently, and only form controls break.
+
+## Design system
+
+Everything visual comes from the approved homepage comp. Tokens, component
+classes and textures live in one file, `assets/input.css`:
+
+- **Chrome** — ink `#15150f` on paper `#f2efe4`.
+- **Three practice palettes** — A sustainability (gold/forest), B heavy
+  infrastructure (clay/grey), C hydraulic authority (teal/mint). A
+  `PracticeChapter`'s `palette` field picks one; the template reads it and
+  never needs to know which chapter it is drawing.
+- **Type** — Bricolage Grotesque for display, Manrope for body and UI,
+  Fraunces italic for pull-quote kickers, all from Google Fonts.
+- **Legacy token names** (`graphite`, `warm-white`, `accent`, `technical`…)
+  still exist and now point at the new palette, so pages written against
+  them picked up the redesign without being edited. New work should prefer
+  the semantic names (`ink`, `paper`, `gold`, `clay`, `teal`).
+
+`SiteSettings.accent_color` still overrides `--color-accent` site-wide with
+no rebuild, exactly as before.
+
+Page structure:
+
+- The homepage (`pages/home.html`) sets `nav_overlay` so the header starts
+  transparent over the hero and turns ink-solid on scroll. Every other page
+  gets the solid bar from the first frame.
+- Every non-homepage view opens with `partials/page_header.html` — pass it
+  `eyebrow`, `title`, `subtitle`, and a `width` matching the page's own
+  content max-width, or the heading and the content start on different left
+  edges. A few detail pages write the same band out inline because they
+  carry a back-link or metadata pills the partial has no slot for.
+- `static/js/animations.js` draws the pressure-gauge motif, sweeps its
+  needle with scroll progress, and runs the reveal observer. All of it is
+  gated on `prefers-reduced-motion`, and the CSS is written so content is
+  visible even if the JS never runs.
+
+## Admin panel
+
+Django Unfold, themed to the same palette (`UNFOLD` in
+`config/settings/base.py`). The `base`/`primary` ramps are OKLCH conversions
+of the brand hexes — clay for primary, because Unfold paints white text on
+`primary-600` and gold cannot carry white text at any usable lightness. Gold
+is applied deliberately, on dark surfaces only, in `static/css/admin.css`.
+
+The sidebar is grouped the way the *site* is organised rather than by app
+label, and `templates/admin/index.html` replaces Unfold's bare app list with
+a dashboard: what needs attention (unhandled counts, not totals), how much
+of the site is filled in (each tile links to its own "add" screen), and the
+latest enquiries. Its data comes from `apps/core/dashboard.py`.
 
 ## Public forms
 

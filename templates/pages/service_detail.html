@@ -5,13 +5,9 @@
 {% block meta_description %}{{ service.meta_description|default:service.short_description }}{% endblock %}
 
 {% block content %}
-<header class="max-w-4xl mx-auto px-4 sm:px-6 pt-16 pb-10">
-  <p class="text-xs uppercase tracking-wide text-accent mb-2">{{ service.category.name }}</p>
-  <h1 class="text-3xl sm:text-4xl font-semibold">{{ service.title }}</h1>
-  <p class="mt-3 text-technical">{{ service.short_description }}</p>
-</header>
+{% include "partials/page_header.html" with width="max-w-4xl" eyebrow=service.category.name title=service.title subtitle=service.short_description %}
 
-<div class="max-w-4xl mx-auto px-4 sm:px-6 grid md:grid-cols-2 gap-10 items-start pb-16">
+<div class="max-w-4xl mx-auto px-4 sm:px-6 pt-14 grid md:grid-cols-2 gap-10 items-start pb-16">
   <div class="prose prose-sm max-w-none text-graphite-soft whitespace-pre-line">{{ service.description }}</div>
   {% if service.image %}
     <img src="{{ service.image.url }}" alt="{{ service.title }}" class="rounded-xl w-full object-cover">
@@ -54,7 +50,7 @@
     <h2 class="text-2xl font-semibold">{% translate "Interested in this service?" %}</h2>
     <p class="mt-2 text-warm-white/70">{% translate "Contact us for a consultation." %}</p>
     <a href="{% url 'contact:index' %}?service={{ service.slug }}"
-       class="inline-block mt-6 bg-accent hover:bg-accent/90 px-6 py-3 rounded-md font-medium transition-colors">
+       class="btn btn-gold mt-6">
       {% translate "Get in Touch" %}
     </a>
   </div>

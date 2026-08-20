@@ -5,19 +5,29 @@
 {% block meta_description %}{{ sector.meta_description|default:sector.short_description }}{% endblock %}
 
 {% block content %}
-<header class="max-w-4xl mx-auto px-4 sm:px-6 pt-16 pb-8">
-  <a href="{% url 'sectors:list' %}" class="text-sm text-accent hover:underline">&larr; {% translate "All sectors" %}</a>
-  <h1 class="mt-4 text-3xl sm:text-4xl font-semibold">{{ sector.name }}</h1>
-  <p class="mt-3 text-lg text-technical">{{ sector.short_description }}</p>
+{% comment %}
+  Written out rather than including partials/page_header.html: this band
+  carries a back-link the shared partial has no slot for. Same classes, so
+  the two stay visually identical.
+{% endcomment %}
+<header class="relative overflow-hidden bg-ink-deep text-white">
+  <div class="brushed absolute inset-0" aria-hidden="true"></div>
+  <div class="grain absolute inset-0" aria-hidden="true"></div>
+  <div class="relative max-w-4xl mx-auto px-4 sm:px-6 pt-14 pb-12 sm:pt-16 sm:pb-14">
+    <a href="{% url 'sectors:list' %}" class="text-sm text-white/60 hover:text-gold transition-colors">&larr; {% translate "All sectors" %}</a>
+    <h1 class="mt-5 font-display font-bold text-[clamp(1.9rem,4.2vw,3.2rem)] leading-[1.06] max-w-[18ch]">{{ sector.name }}</h1>
+    <p class="mt-4 max-w-[54ch] leading-relaxed text-white/70">{{ sector.short_description }}</p>
+    <span class="rule bg-teal block mt-7" aria-hidden="true"></span>
+  </div>
 </header>
 
 {% if sector.image %}
-  <div class="max-w-4xl mx-auto px-4 sm:px-6 pb-10">
-    <img src="{{ sector.image.url }}" alt="" class="w-full rounded-xl object-cover max-h-96">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 pt-14">
+    <img src="{{ sector.image.url }}" alt="" class="w-full rounded-2xl object-cover max-h-96">
   </div>
 {% endif %}
 
-<div class="max-w-4xl mx-auto px-4 sm:px-6 pb-20">
+<div class="max-w-4xl mx-auto px-4 sm:px-6 pt-14 pb-20">
   {% if sector.description %}
     <div class="prose-sm whitespace-pre-line text-graphite-soft leading-relaxed">{{ sector.description }}</div>
   {% endif %}
@@ -40,8 +50,8 @@
     <h2 class="font-semibold mb-2">{% translate "Working in this sector?" %}</h2>
     <p class="text-sm text-technical mb-4">{% translate "Tell us about the project, or register your firm as a partner." %}</p>
     <div class="flex flex-wrap gap-3">
-      <a href="{% url 'contact:index' %}" class="bg-accent hover:bg-accent/90 text-warm-white font-medium px-5 py-2.5 rounded-md text-sm transition-colors">{% translate "Contact Us" %}</a>
-      <a href="{% url 'partners:index' %}" class="border border-technical-soft hover:border-accent font-medium px-5 py-2.5 rounded-md text-sm transition-colors">{% translate "Become a Partner" %}</a>
+      <a href="{% url 'contact:index' %}" class="btn btn-accent">{% translate "Contact Us" %}</a>
+      <a href="{% url 'partners:index' %}" class="btn btn-outline">{% translate "Become a Partner" %}</a>
     </div>
   </div>
 </div>

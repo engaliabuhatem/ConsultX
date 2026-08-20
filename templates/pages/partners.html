@@ -5,14 +5,9 @@
 {% block meta_description %}{% translate "Register your firm as a sub-consultant, joint venture partner, supplier or technology partner." %}{% endblock %}
 
 {% block content %}
-<header class="max-w-3xl mx-auto px-4 sm:px-6 pt-16 pb-8">
-  <h1 class="text-3xl sm:text-4xl font-semibold">{% translate "Become a Partner" %}</h1>
-  <p class="mt-3 text-technical">
-    {% translate "We work with specialist sub-consultants, joint venture partners, suppliers and technology providers. Register your firm below and we'll assess the fit." %}
-  </p>
-</header>
+{% include "partials/page_header.html" with width="max-w-3xl" eyebrow=_("Work with us") title=_("Become a Partner") subtitle=_("We work with specialist sub-consultants, joint venture partners, suppliers and technology providers. Register your firm below and we'll assess the fit.") %}
 
-<div class="max-w-3xl mx-auto px-4 sm:px-6 pb-20">
+<div class="max-w-3xl mx-auto px-4 sm:px-6 pt-14 pb-20">
 
   <div class="mb-10 p-5 rounded-xl border border-technical-soft bg-white text-sm text-technical">
     <p class="font-medium text-graphite mb-1">{% translate "What happens next" %}</p>
@@ -81,7 +76,7 @@
       {% include "partials/form_field_checkbox.html" with field=form.consent %}
     </fieldset>
 
-    <button type="submit" class="w-full sm:w-auto bg-accent hover:bg-accent/90 text-warm-white font-medium px-8 py-3 rounded-md transition-colors">
+    <button type="submit" class="btn btn-accent w-full sm:w-auto justify-center">
       {% translate "Submit registration" %}
     </button>
   </form>

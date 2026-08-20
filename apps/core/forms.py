@@ -9,23 +9,25 @@ sets explicitly still wins — every attribute below uses setdefault.
 
 from django import forms
 
+#: No focus:ring-* here on purpose. The base layer in assets/input.css gives
+#: every focusable element one dual-tone :focus-visible indicator — an ink
+#: outline that reads on paper plus a gold glow that reads on the ink-dark
+#: bands — and a per-widget ring would only compete with it. What the widget
+#: classes do own is the resting look and the invalid state.
 FIELD_CLASSES = (
-    "w-full rounded-md border border-technical-soft bg-white px-4 py-2.5 text-sm "
-    "focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent "
-    "aria-[invalid=true]:border-accent aria-[invalid=true]:ring-1 aria-[invalid=true]:ring-accent"
+    "w-full rounded-xl border border-stone-line bg-white px-4 py-3 text-sm "
+    "transition-colors hover:border-stone/50 focus:border-accent "
+    "aria-[invalid=true]:border-accent aria-[invalid=true]:bg-accent/5"
 )
 
 FILE_CLASSES = (
-    "w-full rounded-md border border-dashed border-technical-soft bg-white px-4 py-3 text-sm "
-    "file:me-4 file:rounded file:border-0 file:bg-accent/10 file:px-4 file:py-2 "
-    "file:text-sm file:font-medium file:text-accent hover:file:bg-accent/20 "
-    "focus:outline-none focus:ring-2 focus:ring-accent"
+    "w-full rounded-xl border border-dashed border-stone-line bg-white px-4 py-3 text-sm "
+    "transition-colors hover:border-stone/50 "
+    "file:me-4 file:rounded-full file:border-0 file:bg-accent/10 file:px-4 file:py-2 "
+    "file:text-sm file:font-semibold file:text-accent hover:file:bg-accent/20"
 )
 
-CHECKBOX_CLASSES = (
-    "h-4 w-4 rounded border-technical-soft text-accent "
-    "focus:ring-2 focus:ring-accent focus:ring-offset-0"
-)
+CHECKBOX_CLASSES = "h-4.5 w-4.5 rounded border-stone-line text-accent"
 
 
 class StyledFormMixin:

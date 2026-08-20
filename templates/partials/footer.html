@@ -1,46 +1,86 @@
 {% load i18n %}
-<footer class="mt-16 border-t border-technical-soft bg-graphite text-warm-white">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 text-sm">
+{% comment %}
+Footer, styled as the design comp's closing band: a brushed-gradient plate
+with the "let's build" hand-off at the top, then the link columns.
 
-    <div>
-      <p class="font-semibold text-base mb-3">ConsultX</p>
-      {% if site_settings.contact_address %}
-        <p class="text-technical-soft/80 whitespace-pre-line">{{ site_settings.contact_address }}</p>
-      {% endif %}
+The gradient is CSS (.brushed-cool in assets/input.css), not a photograph —
+it renders identically at every width and costs no image request.
+{% endcomment %}
+<footer class="relative overflow-hidden bg-ink-deep text-white">
+  <div class="brushed-cool absolute inset-0" aria-hidden="true"></div>
+  <div class="grain absolute inset-0" aria-hidden="true"></div>
+
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 pt-20 pb-8">
+
+    <div class="flex flex-wrap items-end justify-between gap-8 pb-12 border-b border-white/15">
+      <h2 class="font-display font-bold text-3xl sm:text-4xl lg:text-5xl leading-[1.06] max-w-[12ch]">
+        {% translate "Let's build the next direction, together." %}
+      </h2>
+      <a href="{% url 'contact:index' %}" class="btn btn-gold">
+        {% translate "Start a project" %} <span aria-hidden="true">&rarr;</span>
+      </a>
     </div>
 
-    <div>
-      <p class="font-semibold mb-3">{% translate "Company" %}</p>
-      <ul class="space-y-2 text-technical-soft/80">
-        <li><a href="{% url 'team:about' %}" class="hover:text-accent">{% translate "About" %}</a></li>
-        <li><a href="{% url 'team:list' %}" class="hover:text-accent">{% translate "Team" %}</a></li>
-        <li><a href="{% url 'blog:list' %}" class="hover:text-accent">{% translate "Insights" %}</a></li>
-      </ul>
-    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-10 pt-12 text-sm">
 
-    <div>
-      <p class="font-semibold mb-3">{% translate "Contact" %}</p>
-      <ul class="space-y-2 text-technical-soft/80">
-        {% if site_settings.contact_phone %}<li>{{ site_settings.contact_phone }}</li>{% endif %}
-        {% if site_settings.contact_email %}<li><a href="mailto:{{ site_settings.contact_email }}" class="hover:text-accent">{{ site_settings.contact_email }}</a></li>{% endif %}
-        {% if not site_settings.contact_phone and not site_settings.contact_email %}
-          <li class="italic text-technical-soft/50">{% translate "Contact details pending" %}</li>
+      <div class="col-span-2 md:col-span-1">
+        <p class="font-display font-bold text-lg mb-3">
+          <span class="text-gold">C</span>onsultX
+        </p>
+        <p class="text-white/55 leading-relaxed max-w-[28ch]">
+          {% translate "Engineering consultation, built on precision." %}
+        </p>
+        {% if site_settings.contact_address %}
+          <p class="mt-4 text-white/55 whitespace-pre-line">{{ site_settings.contact_address }}</p>
         {% endif %}
-      </ul>
+      </div>
+
+      <div>
+        <h3 class="eyebrow text-white/45 mb-4">{% translate "Company" %}</h3>
+        <ul class="space-y-2.5">
+          <li><a href="{% url 'team:about' %}" class="text-white/80 hover:text-gold transition-colors">{% translate "About" %}</a></li>
+          <li><a href="{% url 'team:leadership' %}" class="text-white/80 hover:text-gold transition-colors">{% translate "Leadership" %}</a></li>
+          <li><a href="{% url 'team:list' %}" class="text-white/80 hover:text-gold transition-colors">{% translate "Team" %}</a></li>
+          <li><a href="{% url 'careers:list' %}" class="text-white/80 hover:text-gold transition-colors">{% translate "Careers" %}</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="eyebrow text-white/45 mb-4">{% translate "Expertise" %}</h3>
+        <ul class="space-y-2.5">
+          <li><a href="{% url 'services:list' %}" class="text-white/80 hover:text-gold transition-colors">{% translate "Services" %}</a></li>
+          <li><a href="{% url 'sectors:list' %}" class="text-white/80 hover:text-gold transition-colors">{% translate "Sectors" %}</a></li>
+          <li><a href="{% url 'projects:list' %}" class="text-white/80 hover:text-gold transition-colors">{% translate "Projects" %}</a></li>
+          <li><a href="{% url 'blog:list' %}" class="text-white/80 hover:text-gold transition-colors">{% translate "Insights" %}</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="eyebrow text-white/45 mb-4">{% translate "Contact" %}</h3>
+        <ul class="space-y-2.5">
+          {% if site_settings.contact_phone %}
+            <li><a href="tel:{{ site_settings.contact_phone }}" class="text-white/80 hover:text-gold transition-colors">{{ site_settings.contact_phone }}</a></li>
+          {% endif %}
+          {% if site_settings.contact_email %}
+            <li><a href="mailto:{{ site_settings.contact_email }}" class="text-white/80 hover:text-gold transition-colors break-all">{{ site_settings.contact_email }}</a></li>
+          {% endif %}
+          {% if not site_settings.contact_phone and not site_settings.contact_email %}
+            <li><a href="{% url 'contact:index' %}" class="text-white/80 hover:text-gold transition-colors">{% translate "Send an enquiry" %}</a></li>
+          {% endif %}
+        </ul>
+
+        {% if site_settings.linkedin_url or site_settings.x_url or site_settings.instagram_url or site_settings.youtube_url %}
+          <ul class="flex flex-wrap gap-x-4 gap-y-2 mt-5 text-white/60">
+            {% if site_settings.linkedin_url %}<li><a href="{{ site_settings.linkedin_url }}" class="hover:text-gold transition-colors">LinkedIn</a></li>{% endif %}
+            {% if site_settings.x_url %}<li><a href="{{ site_settings.x_url }}" class="hover:text-gold transition-colors">X</a></li>{% endif %}
+            {% if site_settings.instagram_url %}<li><a href="{{ site_settings.instagram_url }}" class="hover:text-gold transition-colors">Instagram</a></li>{% endif %}
+            {% if site_settings.youtube_url %}<li><a href="{{ site_settings.youtube_url }}" class="hover:text-gold transition-colors">YouTube</a></li>{% endif %}
+          </ul>
+        {% endif %}
+      </div>
     </div>
 
-    <div>
-      <p class="font-semibold mb-3">{% translate "Follow Us" %}</p>
-      <ul class="flex gap-4 text-technical-soft/80">
-        {% if site_settings.linkedin_url %}<li><a href="{{ site_settings.linkedin_url }}" class="hover:text-accent">LinkedIn</a></li>{% endif %}
-        {% if site_settings.x_url %}<li><a href="{{ site_settings.x_url }}" class="hover:text-accent">X</a></li>{% endif %}
-        {% if site_settings.instagram_url %}<li><a href="{{ site_settings.instagram_url }}" class="hover:text-accent">Instagram</a></li>{% endif %}
-      </ul>
-    </div>
-  </div>
-
-  <div class="border-t border-graphite-soft">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row justify-between gap-2 text-xs text-technical-soft/60">
+    <div class="mt-14 pt-6 border-t border-white/10 flex flex-col sm:flex-row justify-between gap-2 text-xs text-white/45">
       <p>&copy; {% now "Y" %} ConsultX. {{ site_settings.footer_text }}</p>
       {% if site_settings.professional_indemnity_notice %}
         <p>{{ site_settings.professional_indemnity_notice }}</p>

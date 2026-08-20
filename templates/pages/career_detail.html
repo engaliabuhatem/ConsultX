@@ -5,25 +5,34 @@
 {% block meta_description %}{{ opening.meta_description|default:opening.summary }}{% endblock %}
 
 {% block content %}
-<header class="max-w-3xl mx-auto px-4 sm:px-6 pt-16 pb-8">
-  <a href="{% url 'careers:list' %}" class="text-sm text-accent hover:underline">&larr; {% translate "All open roles" %}</a>
-  {% if opening.department %}
-    <p class="mt-6 text-xs uppercase tracking-wide text-accent">{{ opening.department }}</p>
-  {% endif %}
-  <h1 class="mt-2 text-3xl sm:text-4xl font-semibold">{{ opening.title }}</h1>
-  <ul class="mt-4 flex flex-wrap gap-2 text-xs text-technical">
-    <li class="px-3 py-1 rounded-full border border-technical-soft">{{ opening.location }}</li>
-    <li class="px-3 py-1 rounded-full border border-technical-soft">{{ opening.get_workplace_type_display }}</li>
-    <li class="px-3 py-1 rounded-full border border-technical-soft">{{ opening.get_employment_type_display }}</li>
-    {% if opening.closing_date %}
-      <li class="px-3 py-1 rounded-full border border-technical-soft">
-        {% blocktranslate with date=opening.closing_date|date:"j M Y" %}Closes {{ date }}{% endblocktranslate %}
-      </li>
+{% comment %}
+  Written out rather than including partials/page_header.html: this band
+  carries a back-link and the role's fact pills, neither of which the shared
+  partial has a slot for. Same classes, so the two stay visually identical.
+{% endcomment %}
+<header class="relative overflow-hidden bg-ink-deep text-white">
+  <div class="brushed absolute inset-0" aria-hidden="true"></div>
+  <div class="grain absolute inset-0" aria-hidden="true"></div>
+  <div class="relative max-w-3xl mx-auto px-4 sm:px-6 pt-14 pb-12 sm:pt-16 sm:pb-14">
+    <a href="{% url 'careers:list' %}" class="text-sm text-white/60 hover:text-gold transition-colors">&larr; {% translate "All open roles" %}</a>
+    {% if opening.department %}
+      <p class="eyebrow text-gold mt-6">{{ opening.department }}</p>
     {% endif %}
-  </ul>
+    <h1 class="mt-3 font-display font-bold text-[clamp(1.9rem,4.2vw,3.2rem)] leading-[1.06] max-w-[18ch]">{{ opening.title }}</h1>
+    <ul class="mt-6 flex flex-wrap gap-2 text-xs text-white/80">
+      <li class="px-3 py-1.5 rounded-full border border-white/20">{{ opening.location }}</li>
+      <li class="px-3 py-1.5 rounded-full border border-white/20">{{ opening.get_workplace_type_display }}</li>
+      <li class="px-3 py-1.5 rounded-full border border-white/20">{{ opening.get_employment_type_display }}</li>
+      {% if opening.closing_date %}
+        <li class="px-3 py-1.5 rounded-full border border-white/20">
+          {% blocktranslate with date=opening.closing_date|date:"j M Y" %}Closes {{ date }}{% endblocktranslate %}
+        </li>
+      {% endif %}
+    </ul>
+  </div>
 </header>
 
-<div class="max-w-3xl mx-auto px-4 sm:px-6 pb-20">
+<div class="max-w-3xl mx-auto px-4 sm:px-6 pt-14 pb-20">
   <div class="whitespace-pre-line text-graphite-soft leading-relaxed">{{ opening.description }}</div>
 
   {% if opening.requirement_list %}
@@ -53,7 +62,7 @@
       <div class="mt-4 p-6 rounded-xl border border-technical-soft bg-white">
         <p class="font-medium">{% translate "This role has closed." %}</p>
         <p class="mt-2 text-sm text-technical">{% translate "You can still send a speculative application and we'll keep it on file." %}</p>
-        <a href="{% url 'careers:apply' %}" class="inline-block mt-4 bg-accent hover:bg-accent/90 text-warm-white font-medium px-6 py-3 rounded-md text-sm transition-colors">
+        <a href="{% url 'careers:apply' %}" class="inline-block mt-4 btn btn-accent">
           {% translate "Apply speculatively" %}
         </a>
       </div>

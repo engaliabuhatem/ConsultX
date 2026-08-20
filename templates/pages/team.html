@@ -4,11 +4,9 @@
 {% block meta_title %}{% translate "Our Team" %} · ConsultX{% endblock %}
 
 {% block content %}
-<header class="max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-10">
-  <h1 class="text-3xl sm:text-4xl font-semibold">{% translate "Our Team" %}</h1>
-</header>
+{% include "partials/page_header.html" with width="max-w-6xl" eyebrow=_("About") title=_("Our Team") subtitle=_("The engineers who carry the work, from first sketch to signed-off drawing.") %}
 
-<div class="max-w-6xl mx-auto px-4 sm:px-6 pb-20">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 pt-14 pb-20">
   {% if team_members %}
     <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
       {% for member in team_members %}

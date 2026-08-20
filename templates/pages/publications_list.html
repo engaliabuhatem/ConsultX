@@ -4,12 +4,9 @@
 {% block meta_title %}{% translate "Publications" %} · ConsultX{% endblock %}
 
 {% block content %}
-<header class="max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-10">
-  <h1 class="text-3xl sm:text-4xl font-semibold">{% translate "Publications" %}</h1>
-  <p class="mt-3 text-technical max-w-2xl">{% translate "Whitepapers, technical reports and guidance documents, free to download." %}</p>
-</header>
+{% include "partials/page_header.html" with width="max-w-6xl" eyebrow=_("Library") title=_("Publications") subtitle=_("Whitepapers, technical reports and guidance documents, free to download.") %}
 
-<div class="max-w-6xl mx-auto px-4 sm:px-6 mb-10 flex flex-wrap gap-2">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 pt-14 mb-10 flex flex-wrap gap-2">
   <a href="{% url 'publications:list' %}"
      class="px-4 py-1.5 rounded-full text-sm border {% if not active_category %}bg-graphite text-warm-white border-graphite{% else %}border-technical-soft text-technical{% endif %}">
     {% translate "All" %}
@@ -44,7 +41,7 @@
               {% endif %}
             </p>
             <a href="{{ pub.pdf_file.url }}" download
-               class="mt-4 inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent/90 text-warm-white font-medium px-4 py-2.5 rounded-md text-sm transition-colors">
+               class="mt-4 btn btn-accent">
               {% translate "Download" %}{% if pub.file_extension %} ({{ pub.file_extension }}){% endif %}
               <span class="sr-only"> — {{ pub.title }}</span>
             </a>

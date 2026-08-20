@@ -4,12 +4,9 @@
 {% block meta_title %}{% translate "Careers" %} · ConsultX{% endblock %}
 
 {% block content %}
-<header class="max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-10">
-  <h1 class="text-3xl sm:text-4xl font-semibold">{% translate "Careers" %}</h1>
-  <p class="mt-3 text-technical max-w-2xl">{% translate "Engineering work with real accountability. Open roles are listed below." %}</p>
-</header>
+{% include "partials/page_header.html" with width="max-w-6xl" eyebrow=_("Work with us") title=_("Careers") subtitle=_("Engineering work with real accountability. Open roles are listed below.") %}
 
-<div class="max-w-6xl mx-auto px-4 sm:px-6 pb-20">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 pt-14 pb-20">
   {% if openings %}
     <div class="space-y-4">
       {% for opening in openings %}
@@ -54,7 +51,7 @@
       <h2 class="font-semibold">{% translate "Nothing matching your discipline?" %}</h2>
       <p class="text-sm text-technical mt-1">{% translate "Send a speculative application and we'll keep it on file." %}</p>
     </div>
-    <a href="{% url 'careers:apply' %}" class="bg-accent hover:bg-accent/90 text-warm-white font-medium px-6 py-3 rounded-md text-sm transition-colors">
+    <a href="{% url 'careers:apply' %}" class="btn btn-accent">
       {% translate "Apply speculatively" %}
     </a>
   </div>

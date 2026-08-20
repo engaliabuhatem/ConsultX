@@ -5,15 +5,22 @@
 {% block meta_description %}{{ project.meta_description }}{% endblock %}
 
 {% block content %}
-<section class="relative h-[50vh] min-h-[320px] flex items-end">
+<section class="relative h-[56vh] min-h-[360px] flex items-end overflow-hidden bg-ink-deep">
   {% if project.cover_image %}
-    <img src="{{ project.cover_image.url }}" alt="{{ project.title }}" class="absolute inset-0 w-full h-full object-cover">
-    <div class="absolute inset-0 bg-graphite/60"></div>
+    <img src="{{ project.cover_image.url }}" alt="" class="absolute inset-0 w-full h-full object-cover">
+    <div class="absolute inset-0 tint-hero" aria-hidden="true"></div>
   {% else %}
-    <div class="absolute inset-0 bg-graphite"></div>
+    <div class="brushed absolute inset-0" aria-hidden="true"></div>
   {% endif %}
-  <div class="relative max-w-6xl mx-auto px-4 sm:px-6 pb-10 text-warm-white">
-    <h1 class="text-3xl sm:text-5xl font-semibold">{{ project.title }}</h1>
+  <div class="grain absolute inset-0" aria-hidden="true"></div>
+
+  <div class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 pb-12 text-white">
+    <a href="{% url 'projects:list' %}" class="text-sm text-white/60 hover:text-gold transition-colors">&larr; {% translate "All projects" %}</a>
+    <p class="eyebrow text-gold mt-5">
+      {% if project.is_confidential %}{% translate "Confidential Client" %}{% else %}{{ project.client_name }}{% endif %}
+    </p>
+    <h1 class="mt-3 font-display font-bold text-[clamp(2rem,4.8vw,3.6rem)] leading-[1.05] max-w-[18ch]">{{ project.title }}</h1>
+    <span class="rule bg-gold block mt-7" aria-hidden="true"></span>
   </div>
 </section>
 

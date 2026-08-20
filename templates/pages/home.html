@@ -1,119 +1,335 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n static %}
+
+{% comment %}
+The homepage, built to the approved design comp (consultx-homepage.html).
+
+Layout is hardcoded here — hero, chapter sequence, pillars, leadership,
+closing panel — while everything readable comes from the admin: HomeHero,
+PracticeChapter, StatCounter, Service, Project, Testimonial, CTABanner.
+That split is the same one HomeHero's docstring sets out.
+
+The header overlays the hero on this page only; apps/home/views.py sets
+nav_overlay for partials/nav.html.
+{% endcomment %}
 
 {% block content %}
 
-<section class="relative h-[85vh] min-h-[520px] flex items-end">
+{# ============================ HERO ============================ #}
+<section class="relative min-h-[640px] h-[100svh] flex flex-col justify-end overflow-hidden bg-ink-deep text-white">
   {% if hero.background_image %}
-    <img src="{{ hero.background_image.url }}" alt="" data-hero-parallax class="absolute inset-0 w-full h-full object-cover">
-    <div class="absolute inset-0 bg-graphite/70"></div>
+    <img src="{{ hero.background_image.url }}" alt="" data-hero-parallax
+         class="absolute inset-0 w-full h-full object-cover">
+    <div class="absolute inset-0 tint-hero" aria-hidden="true"></div>
   {% else %}
-    <div class="absolute inset-0 bg-graphite"></div>
+    <div class="brushed absolute inset-0" aria-hidden="true"></div>
   {% endif %}
+  <div class="grain absolute inset-0" aria-hidden="true"></div>
 
-  <div class="relative max-w-6xl mx-auto px-4 sm:px-6 pb-16 text-warm-white">
-    <h1 data-aos="fade-up" class="text-4xl sm:text-6xl font-semibold tracking-tight max-w-2xl">
-      {{ hero.headline|default:"Engineering excellence, agile precision, global impact." }}
+  <div class="relative z-10 max-w-7xl w-full mx-auto px-4 sm:px-6 pb-24 sm:pb-28">
+    <p class="eyebrow text-gold mb-5 reveal">{% translate "Engineering Consultation" %}</p>
+
+    <h1 class="reveal font-display font-bold text-[clamp(2.4rem,6.4vw,5.6rem)] leading-[1.02] max-w-[14ch]">
+      {{ hero.headline|default:"Engineering consultation, built on precision." }}
     </h1>
-    {% if hero.subheadline %}
-      <p data-aos="fade-up" data-aos-delay="100" class="mt-4 text-lg text-warm-white/80 max-w-xl">{{ hero.subheadline }}</p>
-    {% endif %}
-    <a href="{{ hero.cta_url|default:'/contact/' }}" data-aos="fade-up" data-aos-delay="200"
-       class="inline-block mt-8 bg-accent hover:bg-accent/90 text-warm-white font-medium px-6 py-3 rounded-md transition-colors">
-      {{ hero.cta_label|default:"Start Your Project" }}
-    </a>
+
+    <p class="reveal mt-6 max-w-[46ch] text-base sm:text-lg leading-relaxed text-white/75">
+      {{ hero.subheadline|default:"Three practices, one standard of delivery — sustainability, heavy infrastructure, and hydraulic authority, held to the same engineering discipline." }}
+    </p>
+
+    <div class="reveal mt-10 flex flex-wrap items-center gap-6 sm:gap-10">
+      <a href="{{ hero.cta_url|default:'/contact/' }}" class="btn btn-gold">
+        {{ hero.cta_label|default:"Start Your Project" }}
+      </a>
+      <a href="#practices" class="hidden sm:flex items-center gap-3 group">
+        <span class="gauge" data-gauge data-gauge-size="76" data-gauge-tick="#FAD02C"></span>
+        <span class="eyebrow text-white/55 group-hover:text-white/80 transition-colors">
+          {% translate "Scroll to explore" %}
+        </span>
+      </a>
+    </div>
+  </div>
+
+  <div class="absolute z-10 start-4 sm:start-6 bottom-7 flex items-center gap-3 text-white/60">
+    <span class="num">{% translate "Since day one" %}</span>
+    <span class="scroll-bar relative block w-px h-8 bg-white/35 overflow-hidden" aria-hidden="true"></span>
   </div>
 </section>
 
+{# ============================ STATS ============================ #}
 {% if stats %}
-<section class="border-b border-technical-soft">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+<section class="bg-ink text-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-14 grid grid-cols-2 md:grid-cols-4 gap-10 sm:gap-8">
     {% for stat in stats %}
-      <div data-aos="fade-up" data-aos-delay="{% widthratio forloop.counter0 1 100 %}">
-        <p data-counter class="text-3xl sm:text-4xl font-semibold text-accent">{{ stat.value }}</p>
-        <p class="mt-1 text-sm text-technical">{{ stat.label }}</p>
+      <div data-aos="fade-up" data-aos-delay="{% widthratio forloop.counter0 1 80 %}">
+        <p data-counter class="font-display text-4xl sm:text-5xl font-bold text-gold">{{ stat.value }}</p>
+        <p class="mt-2 eyebrow text-white/50">{{ stat.label }}</p>
       </div>
     {% endfor %}
   </div>
 </section>
 {% endif %}
 
-<section class="max-w-6xl mx-auto px-4 sm:px-6 py-20">
-  <div class="flex items-end justify-between mb-10">
-    <h2 class="text-2xl sm:text-3xl font-semibold">{% translate "What We Do" %}</h2>
-    <a href="{% url 'services:list' %}" class="text-sm font-medium text-accent hover:underline">{% translate "View All Services" %} &rarr;</a>
-  </div>
+{# ======================= PRACTICE CHAPTERS ======================= #}
+<div id="practices">
+{% for chapter in chapters %}
 
-  {% if featured_services %}
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {% for service in featured_services %}
-        <a href="{{ service.get_absolute_url }}" data-aos="fade-up" data-aos-delay="{% widthratio forloop.counter0 1 100 %}" class="block p-6 rounded-xl border border-technical-soft bg-white hover:border-accent transition-colors">
-          <h3 class="font-semibold text-lg mb-2">{{ service.title }}</h3>
-          <p class="text-sm text-technical">{{ service.short_description }}</p>
-          <span class="inline-block mt-4 text-sm font-medium text-accent">{% translate "Learn More" %} &rarr;</span>
-        </a>
-      {% endfor %}
+  {% if not forloop.first %}
+    <div class="bg-ink flex items-center justify-center py-14">
+      <span class="gauge" data-gauge data-gauge-size="64" data-gauge-tick="#FEFCF6"></span>
     </div>
-  {% else %}
-    <p class="text-technical text-sm italic">{% translate "Services will appear here once added in the admin panel." %}</p>
   {% endif %}
+
+  <section class="chapter relative flex items-end overflow-hidden min-h-[100svh] py-24 text-white">
+    {% if chapter.image %}
+      <img src="{{ chapter.image.url }}" alt="" class="chapter-photo absolute inset-0 w-full h-full object-cover">
+    {% elif chapter.static_image %}
+      <img src="{% static chapter.static_image %}" alt="" loading="lazy"
+           class="chapter-photo absolute inset-0 w-full h-full object-cover">
+    {% else %}
+      <div class="absolute inset-0 bg-ink" aria-hidden="true"></div>
+    {% endif %}
+
+    <div class="absolute inset-0 {% if chapter.palette == 'b' %}tint-b{% elif chapter.palette == 'c' %}tint-c{% else %}tint-a{% endif %}" aria-hidden="true"></div>
+
+    <span class="num absolute z-10 top-24 start-4 sm:start-6 {% if chapter.palette == 'b' %}text-clay-light{% elif chapter.palette == 'c' %}text-teal{% else %}text-gold{% endif %}">
+      0{{ forloop.counter }}
+    </span>
+    <span class="absolute z-10 top-24 end-4 sm:end-6 font-display text-sm text-white/70">ConsultX</span>
+
+    <div class="reveal relative z-10 max-w-7xl w-full mx-auto px-4 sm:px-6">
+      <p class="eyebrow mb-4 {% if chapter.palette == 'b' %}text-clay-light{% elif chapter.palette == 'c' %}text-teal{% else %}text-gold{% endif %}">
+        {{ chapter.eyebrow }}
+      </p>
+      <h2 class="font-display font-bold text-[clamp(2rem,5.2vw,4.4rem)] leading-[1.04] max-w-[15ch]">
+        {{ chapter.title }}
+      </h2>
+      <div class="rule my-6 {% if chapter.palette == 'b' %}bg-clay{% elif chapter.palette == 'c' %}bg-teal{% else %}bg-gold{% endif %}"></div>
+      <p class="max-w-[46ch] leading-relaxed text-white/80">{{ chapter.body }}</p>
+
+      {% if chapter.link_url %}
+        <a href="{{ chapter.link_url }}" class="btn btn-ghost mt-8">
+          {% if chapter.link_label %}{{ chapter.link_label }}{% else %}{% translate "Explore the practice" %}{% endif %}
+          <span aria-hidden="true">&rarr;</span>
+        </a>
+      {% endif %}
+    </div>
+  </section>
+
+{% endfor %}
+</div>
+
+{# ===================== LEADERSHIP MESSAGE ===================== #}
+<section id="leadership" class="grid lg:grid-cols-[1.15fr_1fr] min-h-[72vh]">
+  <div class="relative overflow-hidden min-h-[280px]">
+    <img src="{% static 'img/skyline-dusk.jpg' %}" alt="" loading="lazy"
+         class="absolute inset-0 w-full h-full object-cover">
+  </div>
+  <div class="bg-clay text-white flex flex-col justify-center px-6 sm:px-12 lg:px-14 py-16 lg:py-20">
+    <p class="kicker text-white/85 mb-2">{% translate "Leadership message" %}</p>
+    <h2 class="font-display font-bold text-2xl sm:text-3xl mb-6">
+      {% translate "Built on engineering excellence." %}
+    </h2>
+    <p class="max-w-[42ch] leading-[1.75] text-white/90">
+      {% translate "Since day one, ConsultX was built entirely on engineering excellence as its cornerstone. As a rising force in the industry, our focus is entirely forward-looking." %}
+    </p>
+    <p class="max-w-[42ch] leading-[1.75] text-white/90 mt-4">
+      {% translate "We combine the agile, innovative energy of a startup with the rigorous technical standards required to deliver flawless execution for our partners." %}
+    </p>
+    <a href="{% url 'team:leadership' %}" class="mt-8 text-sm font-semibold tracking-wide inline-flex items-center gap-2 text-white hover:text-gold transition-colors">
+      {% translate "Meet the leadership" %} <span aria-hidden="true">&rarr;</span>
+    </a>
+  </div>
 </section>
 
-<section class="max-w-6xl mx-auto px-4 sm:px-6 py-20 border-t border-technical-soft">
-  <div class="flex items-end justify-between mb-10">
-    <h2 class="text-2xl sm:text-3xl font-semibold">{% translate "Featured Projects" %}</h2>
-    <a href="{% url 'projects:list' %}" class="text-sm font-medium text-accent hover:underline">{% translate "View All Projects" %} &rarr;</a>
-  </div>
-
-  {% if featured_projects %}
-    <div class="grid sm:grid-cols-2 gap-6">
-      {% for project in featured_projects %}
-        <a href="{{ project.get_absolute_url }}" data-aos="fade-up" data-aos-delay="{% widthratio forloop.counter0 1 100 %}" class="group block rounded-xl overflow-hidden border border-technical-soft bg-white">
-          {% if project.cover_image %}
-            <img src="{{ project.cover_image.url }}" alt="{{ project.title }}" class="h-56 w-full object-cover">
-          {% else %}
-            <div class="h-56 w-full bg-graphite-soft"></div>
-          {% endif %}
-          <div class="p-5">
-            <p class="text-xs text-technical uppercase tracking-wide">
-              {% if project.is_confidential %}{% translate "Confidential Client" %}{% else %}{{ project.client_name }}{% endif %}
-            </p>
-            <h3 class="font-semibold mt-1 group-hover:text-accent transition-colors">{{ project.title }}</h3>
-          </div>
-        </a>
-      {% endfor %}
-    </div>
-  {% else %}
-    <div class="rounded-xl border border-dashed border-technical-soft p-10 text-center">
-      <p class="text-technical text-sm">
-        {% translate "ConsultX is newly founded — project case studies will appear here as engagements complete." %}
+{# ========================== PILLARS ========================== #}
+<section id="pillars" class="bg-paper py-24 sm:py-28">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="max-w-2xl mb-14" data-aos="fade-up">
+      <p class="eyebrow text-stone mb-4">{% translate "Three directions, one discipline" %}</p>
+      <h2 class="font-display font-bold text-3xl sm:text-4xl lg:text-5xl leading-[1.08]">
+        {% translate "We didn't pick a lane. We built three, at the same standard." %}
+      </h2>
+      <p class="mt-5 text-ink-soft leading-relaxed max-w-[56ch]">
+        {% translate "Every ConsultX engagement draws on the same rigorous analysis, clean delivery, and forward motion — whichever practice leads, the discipline underneath never changes." %}
       </p>
     </div>
-  {% endif %}
+
+    <div class="grid md:grid-cols-3 gap-5">
+      <a href="{% url 'services:list' %}" data-aos="fade-up"
+         class="group relative flex flex-col min-h-[380px] rounded-2xl p-8 pt-9 bg-forest text-cream transition-transform duration-300 hover:-translate-y-1.5">
+        <span class="num text-gold">01</span>
+        <h3 class="font-display font-bold text-2xl mt-4 mb-3">{% translate "Sustainability" %}</h3>
+        <p class="text-sm leading-relaxed text-cream/80 mb-auto">
+          {% translate "Systems-first design that performs today without borrowing against tomorrow. Impact through precision, not compromise." %}
+        </p>
+        <span class="flex gap-1.5 mt-8" aria-hidden="true">
+          <i class="w-3 h-3 rounded-full bg-gold"></i><i class="w-3 h-3 rounded-full bg-cream"></i>
+        </span>
+        <span class="mt-5 text-sm font-bold inline-flex items-center gap-2">
+          {% translate "Explore the practice" %}
+          <span class="transition-transform group-hover:translate-x-1" aria-hidden="true">&rarr;</span>
+        </span>
+      </a>
+
+      <a href="{% url 'projects:list' %}" data-aos="fade-up" data-aos-delay="80"
+         class="group relative flex flex-col min-h-[380px] rounded-2xl p-8 pt-9 bg-ink-soft text-mist transition-transform duration-300 hover:-translate-y-1.5">
+        <span class="num text-clay-light">02</span>
+        <h3 class="font-display font-bold text-2xl mt-4 mb-3">{% translate "Heavy Infrastructure" %}</h3>
+        <p class="text-sm leading-relaxed text-mist/80 mb-auto">
+          {% translate "Startup agility applied to the rigorous technical standards that heavy, complex builds demand — from foundation to handover." %}
+        </p>
+        <span class="flex gap-1.5 mt-8" aria-hidden="true">
+          <i class="w-3 h-3 rounded-full bg-clay"></i><i class="w-3 h-3 rounded-full bg-wall"></i><i class="w-3 h-3 rounded-full bg-mist"></i>
+        </span>
+        <span class="mt-5 text-sm font-bold inline-flex items-center gap-2">
+          {% translate "Explore the practice" %}
+          <span class="transition-transform group-hover:translate-x-1" aria-hidden="true">&rarr;</span>
+        </span>
+      </a>
+
+      <a href="{% url 'sectors:list' %}" data-aos="fade-up" data-aos-delay="160"
+         class="group relative flex flex-col min-h-[380px] rounded-2xl p-8 pt-9 bg-teal-deep text-mint transition-transform duration-300 hover:-translate-y-1.5">
+        <span class="num text-teal">03</span>
+        <h3 class="font-display font-bold text-2xl mt-4 mb-3">{% translate "Hydraulic Authority" %}</h3>
+        <p class="text-sm leading-relaxed text-mint/80 mb-auto">
+          {% translate "Precision-engineered hydraulic systems and industrial solutions — powering the machines that move the world." %}
+        </p>
+        <span class="flex gap-1.5 mt-8" aria-hidden="true">
+          <i class="w-3 h-3 rounded-full bg-teal"></i><i class="w-3 h-3 rounded-full bg-mint"></i>
+        </span>
+        <span class="mt-5 text-sm font-bold inline-flex items-center gap-2">
+          {% translate "Explore the practice" %}
+          <span class="transition-transform group-hover:translate-x-1" aria-hidden="true">&rarr;</span>
+        </span>
+      </a>
+    </div>
+  </div>
 </section>
 
+{# ========================= SERVICES ========================= #}
+<section id="services" class="bg-paper-dim py-24 sm:py-28">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="flex flex-wrap items-end justify-between gap-4 mb-12">
+      <div>
+        <p class="eyebrow text-stone mb-3">{% translate "Capabilities" %}</p>
+        <h2 class="font-display font-bold text-3xl sm:text-4xl">{% translate "What We Do" %}</h2>
+      </div>
+      <a href="{% url 'services:list' %}" class="text-sm font-semibold text-accent hover:underline underline-offset-4">
+        {% translate "View All Services" %} <span aria-hidden="true">&rarr;</span>
+      </a>
+    </div>
+
+    {% if featured_services %}
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {% for service in featured_services %}
+          <a href="{{ service.get_absolute_url }}" data-aos="fade-up" data-aos-delay="{% widthratio forloop.counter0 1 80 %}"
+             class="card group block p-7">
+            <p class="eyebrow text-stone mb-3">{{ service.category.name }}</p>
+            <h3 class="font-display font-bold text-xl mb-2 group-hover:text-accent transition-colors">{{ service.title }}</h3>
+            <p class="text-sm text-stone leading-relaxed">{{ service.short_description }}</p>
+            <span class="inline-flex items-center gap-2 mt-5 text-sm font-semibold text-accent">
+              {% translate "Learn More" %}
+              <span class="transition-transform group-hover:translate-x-1" aria-hidden="true">&rarr;</span>
+            </span>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="rounded-2xl border border-dashed border-stone-line p-12 text-center">
+        <p class="text-sm text-stone">{% translate "Services will appear here once added in the admin panel." %}</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{# ========================= PROJECTS ========================= #}
+<section id="work" class="bg-paper py-24 sm:py-28">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="flex flex-wrap items-end justify-between gap-4 mb-12">
+      <div>
+        <p class="eyebrow text-stone mb-3">{% translate "Selected work" %}</p>
+        <h2 class="font-display font-bold text-3xl sm:text-4xl">{% translate "Featured Projects" %}</h2>
+      </div>
+      <a href="{% url 'projects:list' %}" class="text-sm font-semibold text-accent hover:underline underline-offset-4">
+        {% translate "View All Projects" %} <span aria-hidden="true">&rarr;</span>
+      </a>
+    </div>
+
+    {% if featured_projects %}
+      <div class="grid sm:grid-cols-2 gap-5">
+        {% for project in featured_projects %}
+          <a href="{{ project.get_absolute_url }}" data-aos="fade-up" data-aos-delay="{% widthratio forloop.counter0 1 80 %}"
+             class="group relative block rounded-2xl overflow-hidden bg-ink min-h-[380px]">
+            {% if project.cover_image %}
+              <img src="{{ project.cover_image.url }}" alt="" loading="lazy"
+                   class="absolute inset-0 w-full h-full object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-105">
+            {% endif %}
+            <div class="absolute inset-0 tint-b" aria-hidden="true"></div>
+            <div class="relative h-full flex flex-col justify-end p-7 text-white min-h-[380px]">
+              <p class="eyebrow text-gold mb-2">
+                {% if project.is_confidential %}{% translate "Confidential Client" %}{% else %}{{ project.client_name }}{% endif %}
+              </p>
+              <h3 class="font-display font-bold text-2xl max-w-[18ch]">{{ project.title }}</h3>
+              <span class="mt-4 text-sm font-semibold inline-flex items-center gap-2 text-white/80">
+                {% translate "View case study" %}
+                <span class="transition-transform group-hover:translate-x-1" aria-hidden="true">&rarr;</span>
+              </span>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="rounded-2xl border border-dashed border-stone-line p-12 text-center">
+        <p class="text-sm text-stone max-w-[52ch] mx-auto">
+          {% translate "ConsultX is newly founded — project case studies will appear here as engagements complete." %}
+        </p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{# ======================== TESTIMONIALS ======================== #}
 {% if testimonials %}
-<section class="max-w-6xl mx-auto px-4 sm:px-6 py-20 border-t border-technical-soft">
-  <h2 class="text-2xl sm:text-3xl font-semibold mb-10">{% translate "What Clients Say" %}</h2>
-  <div class="grid sm:grid-cols-3 gap-6">
-    {% for t in testimonials %}
-      <blockquote data-aos="fade-up" data-aos-delay="{% widthratio forloop.counter0 1 100 %}" class="p-6 rounded-xl bg-white border border-technical-soft">
-        <p class="text-sm text-graphite-soft">&ldquo;{{ t.quote }}&rdquo;</p>
-        <footer class="mt-4 text-sm font-medium">{{ t.client_name }}{% if t.client_role %}, <span class="text-technical font-normal">{{ t.client_role }}</span>{% endif %}</footer>
-      </blockquote>
-    {% endfor %}
+<section class="bg-forest text-cream py-24 sm:py-28">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <p class="eyebrow text-gold mb-3">{% translate "In their words" %}</p>
+    <h2 class="font-display font-bold text-3xl sm:text-4xl mb-12">{% translate "What Clients Say" %}</h2>
+    <div class="grid md:grid-cols-3 gap-5">
+      {% for t in testimonials %}
+        <blockquote data-aos="fade-up" data-aos-delay="{% widthratio forloop.counter0 1 80 %}"
+                    class="rounded-2xl border border-cream/15 bg-white/5 p-7">
+          <p class="kicker text-lg text-cream/90 leading-relaxed">&ldquo;{{ t.quote }}&rdquo;</p>
+          <footer class="mt-6 text-sm font-semibold">
+            {{ t.client_name }}{% if t.client_role %}<span class="block font-normal text-cream/60 mt-0.5">{{ t.client_role }}</span>{% endif %}
+          </footer>
+        </blockquote>
+      {% endfor %}
+    </div>
   </div>
 </section>
 {% endif %}
 
-<section class="bg-graphite text-warm-white">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-16 text-center">
-    <h2 class="text-2xl sm:text-3xl font-semibold">{{ cta.headline|default:"Ready to start your project?" }}</h2>
-    {% if cta.subtext %}<p class="mt-3 text-warm-white/70">{{ cta.subtext }}</p>{% endif %}
-    <a href="{{ cta.button_url|default:'/contact/' }}"
-       class="inline-block mt-8 bg-accent hover:bg-accent/90 px-6 py-3 rounded-md font-medium transition-colors">
-      {{ cta.button_label|default:"Contact Us" }}
-    </a>
+{# ===================== CLOSING CTA PANEL ===================== #}
+<section id="closing" class="grid lg:grid-cols-[1fr_1.1fr] min-h-[70vh]">
+  <div class="relative overflow-hidden min-h-[280px] order-last lg:order-first">
+    <img src="{% static 'img/chapter-hydraulic.jpg' %}" alt="" loading="lazy"
+         class="absolute inset-0 w-full h-full object-cover">
+    <div class="absolute inset-0 tint-c opacity-60" aria-hidden="true"></div>
+  </div>
+  <div class="bg-teal-deep text-mint flex flex-col justify-center px-6 sm:px-12 lg:px-16 py-20">
+    <p class="kicker text-teal text-lg mb-3">{% translate "Engineering consultation" %}</p>
+    <h2 class="font-display font-bold text-white text-3xl sm:text-4xl lg:text-[2.6rem] leading-[1.1] mb-6 max-w-[18ch]">
+      {{ cta.headline|default:"Fueling businesses, from source to surface." }}
+    </h2>
+    <p class="max-w-[46ch] leading-[1.8] text-mint/85">
+      {{ cta.subtext|default:"Whether the brief starts in a forest canopy, a concrete frame, or a reservoir wall, ConsultX brings the same cornerstone: engineering excellence, applied without the baggage of the past." }}
+    </p>
+    <div class="mt-10">
+      <a href="{{ cta.button_url|default:'/contact/' }}" class="btn btn-gold">
+        {{ cta.button_label|default:"Contact Us" }} <span aria-hidden="true">&rarr;</span>
+      </a>
+    </div>
   </div>
 </section>
 
