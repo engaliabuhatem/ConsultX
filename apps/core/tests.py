@@ -122,3 +122,54 @@ class FormFieldRenderingTests(TestCase):
     def test_required_fields_expose_aria_required(self):
         html = self.client.get(reverse("partners:index")).content.decode()
         self.assertIn('aria-required="true"', html)
+
+
+class AdminDashboardTests(TestCase):
+    """ConsultX's use of adminkit. The generic machinery is covered in
+    adminkit/tests.py; what matters here is that this project's cards, sidebar
+    and brand stylesheet are the ones that come out."""
+
+    @classmethod
+    def setUpTestData(cls):
+        from django.contrib.auth import get_user_model
+
+        cls.user = get_user_model().objects.create_user(
+            "editor", password="x", is_staff=True, is_superuser=True
+        )
+
+    def setUp(self):
+        self.client.force_login(self.user)
+
+    def _html(self):
+        with self.settings(ALLOWED_HOSTS=["testserver"]):
+            return self.client.get(reverse("admin:index")).content.decode()
+
+    def test_brand_stylesheet_loads_after_the_theme(self):
+        html = self._html()
+        self.assertLess(
+            html.index("adminkit/css/adminkit.css"),
+            html.index("css/admin-brand.css"),
+        )
+
+    def test_every_sidebar_destination_resolves(self):
+        """A mistyped model reference in ADMIN_NAVIGATION raises at import
+        time, so this asserts the links also answer."""
+        from django.conf import settings
+
+        with self.settings(ALLOWED_HOSTS=["testserver"]):
+            for entry in settings.ADMIN_NAVIGATION:
+                for leaf in entry["items"]:
+                    with self.subTest(title=str(leaf["title"])):
+                        self.assertEqual(self.client.get(str(leaf["link"])).status_code, 200)
+
+    def test_dashboard_shows_the_three_inbox_cards(self):
+        html = self._html()
+        for label in ("Unread enquiries", "New job applications", "New partner applications"):
+            with self.subTest(label=label):
+                self.assertIn(label, html)
+
+    def test_dashboard_shows_the_content_tiles(self):
+        html = self._html()
+        for label in ("Services", "Sectors", "Projects", "Team members", "Chapters"):
+            with self.subTest(label=label):
+                self.assertIn(label, html)

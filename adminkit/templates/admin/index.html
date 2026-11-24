@@ -1,0 +1,95 @@
+{% extends 'admin/base.html' %}
+
+{% load i18n %}
+
+{% comment %}
+Admin landing page.
+
+Unfold's own admin/index.html renders the app list and nothing else, so this
+overrides it to put three rows above that list: what needs attention, how
+filled-in the site currently is, and what arrived recently. Every value comes
+from adminkit.dashboard.Dashboard via UNFOLD["DASHBOARD_CALLBACK"] — this
+template names no model and no project.
+
+For this file to win over Unfold's, "adminkit" must sit before "unfold" in
+INSTALLED_APPS. A project that wants a different landing page puts its own
+admin/index.html in a TEMPLATES DIRS directory, which outranks both.
+
+Class names map to adminkit/static/adminkit/css/adminkit.css. They are plain
+CSS classes rather than Tailwind utilities because Unfold's stylesheet is
+prebuilt and never sees this template.
+{% endcomment %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block branding %}
+    {% include "unfold/helpers/site_branding.html" %}
+{% endblock %}
+
+{% block content %}
+
+<section class="ak-hero">
+  <span class="ak-accentbar" aria-hidden="true"><i></i><i></i><i></i></span>
+  <h1 class="ak-hero-title">{{ ak_greeting }}</h1>
+  <p class="ak-hero-sub">
+    {% if ak_attention_total %}
+      {% blocktranslate count counter=ak_attention_total %}{{ counter }} item is waiting on you.{% plural %}{{ counter }} items are waiting on you.{% endblocktranslate %}
+    {% else %}
+      {% translate "Nothing is waiting on you — you are all caught up." %}
+    {% endif %}
+  </p>
+</section>
+
+{% if ak_attention %}
+  <h2 class="ak-section-title">{{ ak_attention_title }}</h2>
+  <div class="ak-grid ak-grid-3">
+    {% for card in ak_attention %}
+      <a href="{{ card.url }}" class="ak-card ak-card--{{ card.tone }}">
+        <span class="ak-card-value">{{ card.value }}</span>
+        <span class="ak-card-label">{{ card.label }}</span>
+        <span class="ak-card-meta">{% blocktranslate with total=card.total %}{{ total }} total{% endblocktranslate %}</span>
+      </a>
+    {% endfor %}
+  </div>
+{% endif %}
+
+{% if ak_tiles %}
+  <h2 class="ak-section-title">{{ ak_tiles_title }}</h2>
+  <div class="ak-grid ak-grid-4">
+    {% for card in ak_tiles %}
+      <div class="ak-tile{% if not card.value %} ak-tile--empty{% endif %}">
+        <a href="{{ card.url }}" class="ak-tile-main">
+          <span class="ak-tile-value">{{ card.value }}</span>
+          <span class="ak-tile-label">{{ card.label }}</span>
+        </a>
+        {% if card.add %}
+          <a href="{{ card.add }}" class="ak-tile-add" title="{% translate 'Add new' %}">+</a>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+{% if ak_recent %}
+  <h2 class="ak-section-title">{{ ak_recent_title }}</h2>
+  <ul class="ak-list">
+    {% for row in ak_recent %}
+      <li class="ak-list-row">
+        <span class="ak-dot{% if row.handled %} ak-dot--handled{% endif %}" aria-hidden="true"></span>
+        <span class="ak-list-name">{{ row.label }}</span>
+        {% if row.meta %}<span class="ak-list-meta">{{ row.meta }}</span>{% endif %}
+        {% if row.date %}<span class="ak-list-date">{{ row.date|date:"j M Y" }}</span>{% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+<h2 class="ak-section-title">{% translate "All sections" %}</h2>
+<div class="flex flex-col lg:flex-row lg:gap-8">
+    <div class="grow">
+        {% include "unfold/helpers/app_list_default.html" %}
+    </div>
+
+    {% include "unfold/helpers/history.html" %}
+</div>
+{% endblock %}

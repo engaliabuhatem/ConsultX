@@ -1,330 +1,51 @@
 /*
   ============================================================================
-  ConsultX admin chrome
+  ConsultX admin brand
   ============================================================================
 
-  Loaded through UNFOLD["STYLES"], after Unfold's own prebuilt stylesheet.
+  The whole ConsultX skin, now that the components live in the adminkit app.
+  Loaded after adminkit/css/adminkit.css via UNFOLD["STYLES"] — see the
+  build_unfold(extra_styles=...) call in config/settings/base.py.
 
-  Two jobs:
+  Nothing but variables belongs in here. Every color comes from the same
+  palette as assets/input.css, so the admin and the public site read as one
+  product. The base/primary ramps are generated from two of these same hex
+  values by adminkit.palette.
 
-  1. Dashboard components (templates/admin/index.html). Written as plain CSS,
-     not Tailwind utilities — Unfold's stylesheet is prebuilt and shipped in
-     the package, so it never sees this project's templates and any utility
-     invented here simply would not exist.
-
-  2. Brand chrome the Unfold COLORS setting can't reach on its own: the
-     tri-color practice bar, gold focus rings, and the display face used for
-     headings. The base/primary ramps in config/settings/base.py handle
-     everything else.
-
-  Every color below comes from the same palette as assets/input.css. Dark
-  mode is Unfold's own `html.dark` class, so each block has a `.dark` twin
-  rather than a prefers-color-scheme query — otherwise the manual theme
-  switch and the OS setting would disagree.
+  Copying the admin to another site means writing a file like this one, and
+  nothing else.
 */
 
 @import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&display=swap");
 
 :root {
-  --cx-gold: #fad02c;
-  --cx-clay: #9c5539;
-  --cx-teal: #00524d;
-  --cx-teal-bright: #48a899;
-  --cx-forest: #2c5043;
-  --cx-ink: #15150f;
-  --cx-paper: #f2efe4;
-  --cx-line: rgb(21 21 15 / 0.1);
-  --cx-surface: #fff;
-  --cx-text: #15150f;
-  --cx-text-soft: #636864;
+  /* The three practice palettes. Gold leads because it is also the focus ring,
+     and it is the one accent that stays visible on both the paper-light and
+     ink-dark admin surfaces. */
+  --ak-accent-1: #fad02c; /* gold */
+  --ak-accent-2: #9c5539; /* clay */
+  --ak-accent-3: #48a899; /* teal, bright */
+
+  --ak-ink: #15150f;
+  --ak-line: rgb(21 21 15 / 0.1);
+  --ak-surface: #fff;
+  --ak-text: #15150f;
+  --ak-text-soft: #636864;
+
+  /* Ink to forest, the same sweep as the site's own dark sections. */
+  --ak-hero-from: #0a0b08;
+  --ak-hero-mid: #1b1c14;
+  --ak-hero-to: #2c5043;
+  --ak-hero-text: #f7f5ef;
+
+  --ak-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
 }
 
+/* Unfold's own class, not a media query: the manual theme switch and the OS
+   setting must not be able to disagree. */
 html.dark {
-  --cx-line: rgb(255 255 255 / 0.12);
-  --cx-surface: rgb(255 255 255 / 0.04);
-  --cx-text: #f2efe4;
-  --cx-text-soft: rgb(242 239 228 / 0.6);
-}
-
-/* ---------------------------------------------------------------------
-   Brand chrome
-   --------------------------------------------------------------------- */
-.cx-tripill,
-#nav-sidebar .cx-tripill {
-  display: inline-flex;
-  height: 6px;
-  width: 40px;
-  border-radius: 99px;
-  overflow: hidden;
-}
-.cx-tripill i {
-  flex: 1;
-}
-.cx-tripill i:nth-child(1) {
-  background: var(--cx-gold);
-}
-.cx-tripill i:nth-child(2) {
-  background: var(--cx-clay);
-}
-.cx-tripill i:nth-child(3) {
-  background: var(--cx-teal-bright);
-}
-
-/* Keyboard focus in gold, the one accent that stays visible on both the
-   paper-light and ink-dark admin surfaces. */
-.cx-card:focus-visible,
-.cx-tile a:focus-visible,
-#content a:focus-visible,
-#content button:focus-visible {
-  outline: 2px solid var(--cx-gold);
-  outline-offset: 2px;
-  border-radius: 6px;
-}
-
-/* ---------------------------------------------------------------------
-   Dashboard: welcome band
-   --------------------------------------------------------------------- */
-.cx-hero {
-  position: relative;
-  overflow: hidden;
-  border-radius: 14px;
-  padding: 1.9rem 1.9rem 1.75rem;
-  margin-bottom: 2rem;
-  color: #f7f5ef;
-  background:
-    radial-gradient(120% 140% at 88% 8%, rgb(250 208 44 / 0.16), transparent 58%),
-    linear-gradient(104deg, #0a0b08 0%, #1b1c14 46%, #2c5043 100%);
-}
-.cx-hero .cx-tripill {
-  margin-bottom: 1.1rem;
-}
-.cx-hero-title {
-  font-family: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
-  font-weight: 700;
-  font-size: 1.65rem;
-  line-height: 1.15;
-  letter-spacing: -0.01em;
-  margin: 0;
-}
-.cx-hero-sub {
-  margin: 0.5rem 0 0;
-  font-size: 0.9rem;
-  color: rgb(247 245 239 / 0.68);
-}
-
-/* ---------------------------------------------------------------------
-   Dashboard: section headings and grids
-   --------------------------------------------------------------------- */
-.cx-section-title {
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--cx-text-soft);
-  margin: 2.25rem 0 0.85rem;
-}
-.cx-section-title:first-of-type {
-  margin-top: 0;
-}
-
-.cx-grid {
-  display: grid;
-  gap: 0.85rem;
-}
-.cx-grid-3 {
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-}
-.cx-grid-4 {
-  grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
-}
-
-/* ---------------------------------------------------------------------
-   Dashboard: "needs attention" cards
-   --------------------------------------------------------------------- */
-.cx-card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-  padding: 1.25rem 1.3rem 1.15rem;
-  border-radius: 12px;
-  border: 1px solid var(--cx-line);
-  background: var(--cx-surface);
-  text-decoration: none;
-  overflow: hidden;
-  transition:
-    transform 0.2s ease,
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
-}
-.cx-card::before {
-  content: "";
-  position: absolute;
-  inset-inline-start: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  background: var(--cx-tone, var(--cx-gold));
-}
-.cx-card:hover {
-  transform: translateY(-2px);
-  border-color: var(--cx-tone, var(--cx-gold));
-  box-shadow: 0 8px 20px rgb(21 21 15 / 0.08);
-}
-.cx-card--gold {
-  --cx-tone: var(--cx-gold);
-}
-.cx-card--clay {
-  --cx-tone: var(--cx-clay);
-}
-.cx-card--teal {
-  --cx-tone: var(--cx-teal-bright);
-}
-.cx-card-value {
-  font-family: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
-  font-size: 2.1rem;
-  font-weight: 700;
-  line-height: 1;
-  color: var(--cx-text);
-  font-variant-numeric: tabular-nums;
-}
-.cx-card-label {
-  margin-top: 0.35rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--cx-text);
-}
-.cx-card-meta {
-  font-size: 0.75rem;
-  color: var(--cx-text-soft);
-}
-
-/* ---------------------------------------------------------------------
-   Dashboard: content tiles. A zero reads as a to-do, not a failure, so an
-   empty tile is dimmed and dashed rather than colored red.
-   --------------------------------------------------------------------- */
-.cx-tile {
-  display: flex;
-  align-items: stretch;
-  justify-content: space-between;
-  border-radius: 12px;
-  border: 1px solid var(--cx-line);
-  background: var(--cx-surface);
-  overflow: hidden;
-  transition:
-    border-color 0.2s ease,
-    background-color 0.2s ease;
-}
-.cx-tile--empty {
-  border-style: dashed;
-  background: transparent;
-}
-.cx-tile:hover {
-  border-color: var(--cx-clay);
-}
-.cx-tile-main {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-  padding: 1rem 0.5rem 0.95rem 1.1rem;
-  flex: 1;
-  min-width: 0;
-  text-decoration: none;
-}
-.cx-tile-value {
-  font-family: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
-  font-size: 1.5rem;
-  font-weight: 700;
-  line-height: 1;
-  color: var(--cx-text);
-  font-variant-numeric: tabular-nums;
-}
-.cx-tile--empty .cx-tile-value {
-  color: var(--cx-text-soft);
-}
-.cx-tile-label {
-  font-size: 0.78rem;
-  color: var(--cx-text-soft);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.cx-tile-add {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.4rem;
-  flex: none;
-  font-size: 1.15rem;
-  font-weight: 600;
-  line-height: 1;
-  text-decoration: none;
-  color: var(--cx-text-soft);
-  border-inline-start: 1px solid var(--cx-line);
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease;
-}
-.cx-tile-add:hover {
-  background: var(--cx-gold);
-  color: var(--cx-ink);
-}
-
-/* ---------------------------------------------------------------------
-   Dashboard: latest enquiries
-   --------------------------------------------------------------------- */
-.cx-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  border: 1px solid var(--cx-line);
-  border-radius: 12px;
-  overflow: hidden;
-  background: var(--cx-surface);
-}
-.cx-list-row {
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  padding: 0.7rem 1rem;
-  font-size: 0.85rem;
-  color: var(--cx-text);
-}
-.cx-list-row + .cx-list-row {
-  border-top: 1px solid var(--cx-line);
-}
-.cx-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  flex: none;
-  background: var(--cx-gold);
-}
-.cx-dot--read {
-  background: transparent;
-  box-shadow: inset 0 0 0 1px var(--cx-text-soft);
-}
-.cx-list-name {
-  font-weight: 600;
-}
-.cx-list-meta {
-  color: var(--cx-text-soft);
-}
-.cx-list-date {
-  margin-inline-start: auto;
-  color: var(--cx-text-soft);
-  font-size: 0.78rem;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .cx-card,
-  .cx-tile,
-  .cx-tile-add {
-    transition: none;
-  }
-  .cx-card:hover {
-    transform: none;
-  }
+  --ak-line: rgb(255 255 255 / 0.12);
+  --ak-surface: rgb(255 255 255 / 0.04);
+  --ak-text: #f2efe4;
+  --ak-text-soft: rgb(242 239 228 / 0.6);
 }
