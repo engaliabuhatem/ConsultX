@@ -63,17 +63,23 @@ Page structure:
 
 ## Admin panel
 
-Django Unfold, themed to the same palette (`UNFOLD` in
-`config/settings/base.py`). The `base`/`primary` ramps are OKLCH conversions
-of the brand hexes — clay for primary, because Unfold paints white text on
+Django Unfold, themed to the same palette. Everything reusable lives in the
+`adminkit/` app — see `adminkit/README.md` for the checklist to install the
+same admin on another Django site. What is specific to ConsultX is the
+`build_unfold(...)` call and `ADMIN_NAVIGATION` in `config/settings/base.py`,
+the dashboard spec in `apps/core/dashboard.py`, and the variables in
+`static/css/admin-brand.css`.
+
+The `base`/`primary` ramps are generated from two brand hexes by
+`adminkit.palette` — clay for primary, because Unfold paints white text on
 `primary-600` and gold cannot carry white text at any usable lightness. Gold
-is applied deliberately, on dark surfaces only, in `static/css/admin.css`.
+is applied deliberately, on dark surfaces only, via the brand stylesheet.
 
 The sidebar is grouped the way the *site* is organised rather than by app
-label, and `templates/admin/index.html` replaces Unfold's bare app list with
+label, and adminkit's `admin/index.html` replaces Unfold's bare app list with
 a dashboard: what needs attention (unhandled counts, not totals), how much
 of the site is filled in (each tile links to its own "add" screen), and the
-latest enquiries. Its data comes from `apps/core/dashboard.py`.
+latest enquiries.
 
 ## Public forms
 
